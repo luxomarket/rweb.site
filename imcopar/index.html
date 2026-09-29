@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<meta content="#111315" name="theme-color"/>
+<meta content="Demo conceptual para IMCOPAR: captación y seguimiento de oportunidades inmobiliarias." name="description"/>
+<title>IMCOPAR | Demo de experiencia comercial</title>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+<div class="container topbar-inner">
+<div aria-label="IMCOPAR demo" class="brand">
+<img class="brand-logo" src="logo.svg" alt="IMCOPAR"/>
+<div class="brand-copy"><strong>IMCOPAR</strong><span>Experiencia comercial · Demo conceptual</span></div>
+</div>
+<div aria-label="Cambiar vista" class="mode-switch" role="tablist">
+<button aria-selected="true" class="active" id="clientModeBtn">Interesado</button>
+<button aria-selected="false" id="staffModeBtn">Vista IMCOPAR</button>
+</div>
+<div class="demo-tag">Datos demostrativos</div>
+</div>
+</header>
+<main id="clientView">
+<section class="hero">
+<div class="container hero-grid">
+<div>
+<span class="eyebrow">Lotes a plazos · Paraguay</span>
+<h1>Encontrá una opción que encaje con lo que buscás.</h1>
+<p>Explorá loteamientos publicados por IMCOPAR o contanos qué necesitás. Esta experiencia organiza tu interés antes de conectarte con el equipo comercial.</p>
+<div class="hero-actions">
+<button class="btn btn-primary" onclick="startWizard()">Encontrar una opción <span>→</span></button>
+<a class="btn btn-light" href="#loteamientos">Ver loteamientos</a>
+</div>
+</div>
+<div class="hero-card">
+<div class="mini">Qué demuestra esta experiencia</div>
+<h2>De una consulta abierta a una oportunidad comercial con contexto.</h2>
+<div class="flowline">
+<div class="flowstep"><b>01</b><span>El interesado define qué busca.</span></div>
+<div class="flowstep"><b>02</b><span>La consulta llega mejor clasificada.</span></div>
+<div class="flowstep"><b>03</b><span>IMCOPAR puede dar seguimiento.</span></div>
+</div>
+</div>
+</div>
+</section>
+<section class="section" id="loteamientos">
+<div class="container">
+<div class="section-head">
+<div><span class="eyebrow">Oferta publicada</span><h2>Loteamientos para explorar</h2></div>
+<p>Los proyectos y referencias económicas mostrados aquí corresponden a información pública publicada por IMCOPAR. La disponibilidad debe confirmarse comercialmente.</p>
+</div>
+<div class="projects" id="projectGrid"></div>
+<p class="source-note">Demo no transaccional. No reserva lotes ni confirma disponibilidad. Los valores publicados son referencias tomadas de la oferta pública consultada.</p>
+</div>
+</section>
+<div class="container value-strip">
+<div class="value-item"><div class="value-num">1</div><div><b>Menos preguntas innecesarias</b><span>Solo se solicita información que ayuda a entender la intención inicial.</span></div></div>
+<div class="value-item"><div class="value-num">2</div><div><b>Contexto antes del contacto</b><span>Proyecto, objetivo, rango y momento quedan asociados a la consulta.</span></div></div>
+<div class="value-item"><div class="value-num">3</div><div><b>Seguimiento visible</b><span>La misma oportunidad puede recorrerse en la vista interna de la demo.</span></div></div>
+</div>
+<footer><div class="container footer-line"><span>Demo conceptual preparada para evaluación de IMCOPAR.</span><span>Sin integración real · Sin datos de clientes reales</span></div></footer>
+</main>
+<main class="hidden" id="staffView">
+<div class="dash">
+<aside class="sidebar">
+<div class="side-brand"><img src="logo.svg" alt="IMCOPAR"/><span>Vista interna demostrativa</span></div>
+<div class="side-title">Gestión comercial</div>
+<button class="navitem active">Oportunidades</button>
+<button class="navitem" onclick="toast('Vista demostrativa: módulo resumido en esta demo.')">Seguimientos</button>
+<button class="navitem" onclick="toast('Vista demostrativa: se integraría según el proceso real de IMCOPAR.')">Actividad</button>
+<div class="legal">Flujo demostrativo adaptable al proceso comercial actual de IMCOPAR.</div>
+</aside>
+<section class="main">
+<div class="dash-head">
+<div><div class="demo-tag" style="display:inline-flex;margin-bottom:9px">Datos demostrativos</div><h1>Oportunidades</h1><p>Consultas estructuradas para facilitar el seguimiento.</p></div>
+<div class="hero-actions"><button class="btn btn-dark" onclick="switchMode('client')">+ Crear consulta de prueba</button><button class="btn btn-light" onclick="resetDemo()">Reiniciar demo</button></div>
+</div>
+<div class="kpis" id="kpis"></div>
+<div class="panel">
+<div class="panel-head">
+<h2>Interesados recientes</h2>
+<div class="tools">
+<input aria-label="Buscar oportunidades" id="searchLead" placeholder="Buscar persona o proyecto" type="search"/>
+<select aria-label="Filtrar por estado" id="statusFilter">
+<option value="">Todos los estados</option><option>Nuevo</option><option>Contactado</option><option>Seguimiento</option><option>Visita coordinada</option><option>Negociación</option>
+</select>
+</div>
+</div>
+<div style="overflow:auto"><table class="lead-table"><thead><tr><th>Interesado</th><th>Interés</th><th>Rango / cuota</th><th>Momento</th><th>Estado</th></tr></thead><tbody id="leadRows"></tbody></table></div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<div aria-labelledby="wizardTitle" aria-modal="true" class="overlay hidden" id="wizardOverlay" role="dialog">
+<div class="wizard">
+<div class="wizard-head"><strong>Asistente de interés · IMCOPAR</strong><button aria-label="Cerrar" class="close" onclick="closeWizard()">×</button></div>
+<div class="progress"><span id="progressBar"></span></div>
+<div class="wizard-body" id="wizardBody"></div>
+<div class="wizard-foot" id="wizardFoot"></div>
+</div>
+</div>
+<div class="drawer-overlay hidden" id="drawerOverlay" onclick="drawerBackdrop(event)"><div class="drawer" id="leadDrawer"></div></div>
+<div class="toast" id="toast"></div>
+<script src="app1.js"></script>
+<script src="app2.js"></script>
+<script src="app3.js"></script>
+<script src="app4.js"></script>
+</body>
+</html>
