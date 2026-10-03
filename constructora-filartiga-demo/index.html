@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#17241f" />
+  <meta name="description" content="Demo funcional de gestión de oportunidades y proyectos para Constructora Filártiga - Cárdenas & Asoc." />
+  <title>Filártiga · Cárdenas — Gestión de oportunidades</title>
+  <style>
+:root{
+  --ink:#18221e;--muted:#69736e;--line:#dfe5e1;--paper:#f5f7f5;--white:#fff;
+  --forest:#172f27;--forest-2:#214237;--sage:#a8b8ae;--sand:#d7c6a0;--accent:#b79755;
+  --danger:#a0473f;--warning:#a97723;--success:#2f6f4f;--blue:#456774;
+  --shadow:0 18px 45px rgba(24,34,30,.08);--radius:16px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:14px;line-height:1.5}button,input,select,textarea{font:inherit}button{cursor:pointer}h1,h2,h3,h4,p{margin-top:0}h1,h2,h3,h4{font-family:Manrope,Inter,sans-serif;letter-spacing:-.025em}h1{font-size:clamp(2rem,4vw,4rem);line-height:1.02;margin-bottom:20px}h2{font-size:1.25rem;margin:2px 0 0}h3{font-size:1.35rem;margin-bottom:6px}h4{font-size:1.08rem;margin-bottom:14px}.is-hidden{display:none!important}.mobile-only{display:none}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--accent);margin-bottom:8px}.btn{border:1px solid transparent;border-radius:10px;padding:10px 14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--forest);color:#fff}.btn-primary:hover{background:var(--forest-2)}.btn-secondary{background:#fff;border-color:var(--line);color:var(--ink)}.btn-danger{background:#fff1ef;border-color:#f0c2bd;color:var(--danger)}.btn-lg{padding:14px 18px;font-size:15px}.text-btn{border:0;background:transparent;color:var(--forest);font-weight:700;padding:4px}.icon-btn{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:10px;font-size:20px;color:var(--ink)}.brand{display:flex;align-items:center;gap:11px}.brand-monogram{display:grid;place-items:center;width:38px;height:38px;border:1px solid currentColor;border-radius:50%;font-family:Manrope;font-weight:800;letter-spacing:-.08em}.brand-copy{display:flex;flex-direction:column;line-height:1.15}.brand-copy strong{font-family:Manrope;font-size:12px;letter-spacing:.04em}.brand-copy small{font-size:10px;color:#9aac9f;margin-top:4px}.demo-note{font-size:11px;color:var(--muted);margin:16px 0 0}.demo-chip{font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(255,255,255,.18);padding:7px 9px;border-radius:999px;color:#cdd8d1;display:inline-flex}
+.login-shell{min-height:100vh;background:#10251f;color:#f7f7f2;display:grid;place-items:center;position:relative;overflow:hidden;padding:28px}.login-grid,.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent)}.login-mark{position:absolute;right:-3vw;bottom:-14vh;font:800 min(45vw,660px)/1 Manrope;color:rgba(255,255,255,.025);letter-spacing:-.12em;animation:drift 13s ease-in-out infinite alternate}.login-card{position:relative;width:min(720px,100%);padding:44px;background:rgba(21,47,38,.78);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 90px rgba(0,0,0,.28);backdrop-filter:blur(8px);border-radius:24px}.brand-login{margin-bottom:64px}.brand-login .brand-copy strong{font-size:13px}.brand-login .brand-copy small{color:#a8b8ae}.login-lead{font-size:16px;color:#c7d2cc;max-width:610px;margin-bottom:28px}.login-card .demo-note{color:#94a79d;max-width:560px}.login-card .btn{background:#f1eadb;color:#20362e}.login-card .btn:hover{background:#fff}@keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-2vw,-2vh,0)}}
+.app-shell{min-height:100vh;display:grid;grid-template-columns:248px 1fr}.sidebar{position:fixed;left:0;top:0;bottom:0;width:248px;background:var(--forest);color:#fff;padding:20px 16px;display:flex;flex-direction:column;z-index:30}.sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 24px}.nav{display:flex;flex-direction:column;gap:4px}.nav-item{width:100%;border:0;background:transparent;color:#bed0c5;text-align:left;padding:11px 12px;border-radius:10px;display:flex;align-items:center;gap:10px;font-weight:600}.nav-item span{width:18px;text-align:center}.nav-item b{margin-left:auto;background:rgba(255,255,255,.11);padding:2px 7px;border-radius:999px;font-size:10px}.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.09);color:#fff}.sidebar-foot{margin-top:auto;padding:14px 8px 4px;border-top:1px solid rgba(255,255,255,.1)}.sidebar-foot .text-btn{display:block;color:#cbd8d0;margin-top:10px;padding-left:0;font-size:12px}.main{grid-column:2;min-width:0}.topbar{height:78px;background:rgba(245,247,245,.94);backdrop-filter:blur(12px);position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px}.topbar-left,.topbar-actions{display:flex;align-items:center;gap:12px}.greeting{font-size:11px;color:var(--muted);margin:0}.search-wrap{width:min(330px,30vw);height:40px;border:1px solid var(--line);background:#fff;border-radius:10px;display:flex;align-items:center;gap:7px;padding:0 10px}.search-wrap input{border:0;outline:0;width:100%;background:transparent;font-size:12px}.user-badge{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#e3e7e3;font:700 11px Manrope}.page{display:none;padding:28px 30px 42px}.page.active{display:block}.hero-panel{min-height:225px;background:linear-gradient(115deg,#173128,#28453b);color:#fff;border-radius:20px;padding:30px;position:relative;overflow:hidden;display:grid;grid-template-columns:1.5fr .7fr;gap:24px;align-items:end;box-shadow:var(--shadow)}.hero-panel .hero-grid{opacity:.8}.hero-watermark{position:absolute;right:2%;top:-29%;font:800 300px/1 Manrope;color:rgba(255,255,255,.035);letter-spacing:-.12em;animation:drift 14s ease-in-out infinite alternate}.hero-copy,.hero-stat{position:relative}.hero-copy h3{font-size:clamp(1.6rem,3vw,2.7rem);max-width:800px;line-height:1.1}.hero-copy p:last-child{color:#c0d0c7;margin-bottom:0}.hero-stat{justify-self:end;width:min(310px,100%);padding:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px}.hero-stat span,.hero-stat small{display:block;color:#b9cbc0;font-size:11px}.hero-stat strong{display:block;margin:7px 0 4px;font-size:14px}.metrics-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:18px 0}.metric{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}.metric-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px}.metric strong{display:block;font:800 25px Manrope;margin:10px 0 3px}.metric small{color:var(--muted);font-size:10px}.metric-dot{width:8px;height:8px;border-radius:50%;background:var(--sage)}.content-grid{display:grid;gap:16px}.content-grid.two-thirds{grid-template-columns:1.65fr .85fr}.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 8px 25px rgba(20,35,29,.03)}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}.panel-head h3{margin:0}.attention-list,.agenda-list{display:flex;flex-direction:column}.attention-item,.agenda-item{padding:14px 0;border-top:1px solid #edf0ed;display:grid;align-items:center;gap:12px}.attention-item{grid-template-columns:1fr auto}.attention-item:first-child,.agenda-item:first-child{border-top:0}.attention-main strong,.agenda-item strong{display:block}.attention-main span,.agenda-item span{display:block;color:var(--muted);font-size:11px;margin-top:4px}.attention-meta{display:flex;align-items:center;gap:10px}.badge,.status-badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:700;white-space:nowrap}.badge.danger{background:#f8e5e2;color:var(--danger)}.badge.warning{background:#f8efd9;color:var(--warning)}.badge.success{background:#e2efe8;color:var(--success)}.badge.neutral{background:#edf0ed;color:#56615c}.agenda-item{grid-template-columns:44px 1fr}.date-box{width:42px;text-align:center;padding:7px 4px;background:#f1f4f1;border-radius:9px}.date-box strong{font-size:15px;line-height:1}.date-box small{font-size:9px;text-transform:uppercase;color:var(--muted)}.pipeline-preview{margin-top:16px}.pipeline-preview-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.stage-mini{background:#f5f7f5;border-radius:11px;padding:12px}.stage-mini span{display:block;font-size:10px;color:var(--muted);min-height:30px}.stage-mini strong{font-size:18px}.page-intro{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin-bottom:20px}.page-intro h3{font-size:1.8rem;margin-bottom:5px}.page-intro p:last-child{color:var(--muted);margin-bottom:0;max-width:730px}.toolbar{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:12px}.filter-row{display:flex;flex-wrap:wrap;gap:7px}.filter-chip{border:1px solid var(--line);background:#fff;padding:7px 10px;border-radius:999px;font-size:11px;color:var(--muted)}.filter-chip.active{background:var(--forest);color:#fff;border-color:var(--forest)}select{background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 10px;color:var(--ink)}.table-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}.data-table{width:100%;border-collapse:collapse}.data-table th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;text-align:left;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--line);background:#f8faf8}.data-table td{padding:13px 14px;border-bottom:1px solid #edf0ed;vertical-align:middle}.data-table tbody tr:hover{background:#fafcfa}.data-table tbody tr:last-child td{border-bottom:0}.cell-title{font-weight:700}.cell-sub{font-size:10px;color:var(--muted);margin-top:2px}.row-action{border:0;background:#eef2ef;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:700}.kanban{display:grid;grid-template-columns:repeat(5,minmax(240px,1fr));gap:12px;overflow-x:auto;padding-bottom:14px;align-items:start}.kanban-col{background:#eef2ef;border-radius:14px;padding:10px;min-height:420px}.kanban-head{display:flex;align-items:center;justify-content:space-between;padding:3px 4px 10px}.kanban-head strong{font-size:11px}.kanban-count{font-size:10px;background:#dde5df;padding:3px 7px;border-radius:999px}.kanban-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:8px;box-shadow:0 6px 12px rgba(20,35,29,.03)}.kanban-card h4{font-size:12px;margin:0 0 4px}.kanban-card p{font-size:10px;color:var(--muted);margin:0 0 10px}.kanban-card-foot{display:flex;justify-content:space-between;align-items:center}.avatar{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#e7ece8;font-size:8px;font-weight:800}.kanban-card select{padding:5px 6px;font-size:9px;max-width:150px}.followup-list{display:grid;gap:10px}.followup-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;grid-template-columns:110px 1fr auto;gap:16px;align-items:center}.followup-date{font:700 12px Manrope}.followup-card h4{margin:0 0 3px}.followup-card p{margin:0;color:var(--muted);font-size:11px}.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.project-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;position:relative;overflow:hidden}.project-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}.project-card h4{margin-bottom:5px}.project-card p{color:var(--muted);font-size:11px}.project-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.project-meta div{background:#f5f7f5;border-radius:9px;padding:9px}.project-meta span{display:block;font-size:9px;color:var(--muted)}.project-meta strong{display:block;font-size:11px;margin-top:3px}.request-layout{display:grid;grid-template-columns:.75fr 1.25fr;gap:26px;max-width:1100px;margin:auto}.request-copy{padding:24px 10px}.request-copy h3{font-size:2rem}.request-copy>p:last-of-type{color:var(--muted);font-size:14px}.steps-vertical{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:12px}.steps-vertical li{display:flex;align-items:center;gap:10px;color:#8a928d;font-weight:600}.steps-vertical li span{display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:50%;font-size:10px}.steps-vertical li.active{color:var(--ink)}.steps-vertical li.active span{background:var(--forest);color:#fff;border-color:var(--forest)}.request-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow)}.form-step{display:none}.form-step.active{display:block}.step-counter{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.form-grid{display:grid;gap:12px}.form-grid.two{grid-template-columns:1fr 1fr}label{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:700;color:#4f5954;margin-bottom:12px}input,textarea,select{width:100%;border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px 11px;outline:none;color:var(--ink)}input:focus,textarea:focus,select:focus{border-color:#879a8e;box-shadow:0 0 0 3px rgba(135,154,142,.12)}textarea{resize:vertical}.form-actions{display:flex;justify-content:space-between;gap:9px;margin-top:16px}.form-actions.end{justify-content:flex-end}.summary-box{background:#f5f7f5;border-radius:12px;padding:14px;display:grid;gap:8px}.summary-row{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #e1e6e2;padding-bottom:7px}.summary-row:last-child{border-bottom:0;padding-bottom:0}.summary-row span{color:var(--muted);font-size:10px}.summary-row strong{text-align:right;font-size:11px}.modal-backdrop{position:fixed;inset:0;background:rgba(16,29,24,.48);z-index:80;backdrop-filter:blur(2px)}dialog.modal{border:0;padding:0;border-radius:18px;width:min(980px,calc(100vw - 30px));max-height:88vh;overflow:auto;box-shadow:0 24px 80px rgba(0,0,0,.28);z-index:90;color:var(--ink)}dialog.modal::backdrop{background:transparent}.modal-form{width:min(790px,calc(100vw - 30px))!important}.modal-small{width:min(560px,calc(100vw - 30px))!important}.modal-head{position:sticky;top:0;background:#fff;z-index:4;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;padding:18px 20px}.modal-head h3{margin:0}.modal-form form,.modal-small form{padding:20px}.detail-shell{padding:0 20px 22px}.detail-hero{display:grid;grid-template-columns:1.4fr .6fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}.detail-hero h4{font-size:1.45rem;margin:5px 0}.detail-hero p{color:var(--muted);font-size:11px}.detail-value{background:#f4f7f4;border-radius:12px;padding:14px;align-self:start}.detail-value span{display:block;color:var(--muted);font-size:10px}.detail-value strong{display:block;font:800 19px Manrope;margin-top:5px}.detail-tabs{display:flex;gap:16px;border-bottom:1px solid var(--line);padding-top:8px;overflow:auto}.detail-tab{border:0;background:transparent;padding:12px 0;font-size:11px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}.detail-tab.active{color:var(--ink);border-color:var(--forest)}.detail-pane{display:none;padding:18px 0}.detail-pane.active{display:block}.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.detail-field{background:#f7f9f7;border-radius:10px;padding:11px}.detail-field span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.detail-field strong{display:block;font-size:11px;margin-top:4px}.detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.timeline{display:grid}.timeline-item{position:relative;padding:0 0 18px 22px;border-left:1px solid #dce4de;margin-left:6px}.timeline-item:before{content:"";position:absolute;left:-5px;top:2px;width:9px;height:9px;background:#fff;border:2px solid var(--forest);border-radius:50%}.timeline-item:last-child{border-left-color:transparent}.timeline-item strong{display:block;font-size:11px}.timeline-item span{display:block;color:var(--muted);font-size:10px;margin-top:3px}.quote-table{width:100%;border-collapse:collapse}.quote-table th,.quote-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left;font-size:10px}.quote-table th{color:var(--muted)}.empty{padding:32px;text-align:center;color:var(--muted);font-size:12px}.toast{position:fixed;right:20px;bottom:20px;z-index:120;background:#172f27;color:#fff;border-radius:10px;padding:12px 15px;box-shadow:var(--shadow);opacity:0;transform:translateY(12px);pointer-events:none;transition:.22s}.toast.show{opacity:1;transform:none}.toast.error{background:#7b332e}
+@media(max-width:1180px){.metrics-grid{grid-template-columns:repeat(3,1fr)}.pipeline-preview-grid{grid-template-columns:repeat(3,1fr)}.project-grid{grid-template-columns:repeat(2,1fr)}.content-grid.two-thirds{grid-template-columns:1.35fr .9fr}.topbar-actions .search-wrap{display:none}}
+@media(max-width:820px){.mobile-only{display:grid}.app-shell{display:block}.sidebar{transform:translateX(-105%);transition:.25s}.sidebar.open{transform:none;box-shadow:0 0 70px rgba(0,0,0,.25)}.main{display:block}.topbar{height:70px;padding:0 16px}.topbar-actions .user-badge{display:none}.topbar-actions .btn{font-size:0;padding:10px;width:40px}.topbar-actions .btn:before{content:"+";font-size:20px}.page{padding:20px 16px 34px}.hero-panel{grid-template-columns:1fr;padding:22px;min-height:310px}.hero-stat{justify-self:stretch}.content-grid.two-thirds{grid-template-columns:1fr}.project-grid{grid-template-columns:1fr}.request-layout{grid-template-columns:1fr}.request-copy{padding:4px}.steps-vertical{grid-template-columns:repeat(4,1fr);gap:5px;margin:16px 0}.steps-vertical li{font-size:0;gap:0}.steps-vertical li span{font-size:10px}.toolbar{align-items:flex-start;flex-direction:column}.table-card{border:0;background:transparent;overflow:visible}.data-table thead{display:none}.data-table,.data-table tbody,.data-table tr,.data-table td{display:block;width:100%}.data-table tr{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;padding:11px}.data-table td{border:0;padding:5px 0}.data-table td:before{content:attr(data-label);display:block;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}.data-table td:first-child:before{display:none}.followup-card{grid-template-columns:80px 1fr}.followup-card .btn{grid-column:1/-1}.detail-grid{grid-template-columns:repeat(2,1fr)}.detail-hero{grid-template-columns:1fr}.modal{max-height:92vh}.login-card{padding:28px}.brand-login{margin-bottom:42px}}
+@media(max-width:520px){.metrics-grid{grid-template-columns:repeat(2,1fr)}.pipeline-preview-grid{grid-template-columns:repeat(2,1fr)}.form-grid.two{grid-template-columns:1fr}.page-intro{align-items:flex-start;flex-direction:column}.page-intro>.btn{width:100%}.request-card{padding:18px}.detail-grid{grid-template-columns:1fr}.hero-copy h3{font-size:1.75rem}.attention-item{grid-template-columns:1fr}.attention-meta{justify-content:space-between}.topbar h2{font-size:1.05rem}.modal-head{padding:14px 15px}.detail-shell{padding:0 15px 18px}.metric{padding:13px}.metric strong{font-size:21px}.login-card{padding:24px}.login-shell{padding:14px}.brand-copy strong{font-size:10px}.hero-watermark{font-size:220px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+</style>
+</head>
+<body>
+  <div id="login" class="login-shell" aria-hidden="false">
+    <div class="login-grid" aria-hidden="true"></div>
+    <div class="login-mark" aria-hidden="true">FC</div>
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="brand brand-login">
+        <span class="brand-monogram">FC</span>
+        <span class="brand-copy"><strong>FILÁRTIGA · CÁRDENAS</strong><small>Gestión de oportunidades y proyectos</small></span>
+      </div>
+      <p class="eyebrow">DEMO FUNCIONAL</p>
+      <h1 id="login-title">Una vista única desde la oportunidad hasta el proyecto.</h1>
+      <p class="login-lead">Organizá relevamientos, documentación, presupuestos, seguimiento y aprobación sin perder el contexto de cada obra.</p>
+      <button id="enterDemo" class="btn btn-primary btn-lg">Entrar a la demo <span>→</span></button>
+      <p class="demo-note">Todos los nombres e importes dentro de la demo son ficticios y están identificados como datos demostrativos.</p>
+    </section>
+  </div>
+
+  <div id="app" class="app-shell is-hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <div class="brand">
+          <span class="brand-monogram">FC</span>
+          <span class="brand-copy"><strong>FILÁRTIGA · CÁRDENAS</strong><small>Gestión de obras</small></span>
+        </div>
+        <button id="closeSidebar" class="icon-btn mobile-only" aria-label="Cerrar menú">×</button>
+      </div>
+      <nav class="nav" aria-label="Navegación principal">
+        <button class="nav-item active" data-page="dashboard"><span>▦</span> Centro operativo</button>
+        <button class="nav-item" data-page="opportunities"><span>◫</span> Oportunidades <b id="navOpportunityCount">0</b></button>
+        <button class="nav-item" data-page="pipeline"><span>⇥</span> Pipeline</button>
+        <button class="nav-item" data-page="followups"><span>✓</span> Seguimientos</button>
+        <button class="nav-item" data-page="projects"><span>⌂</span> Proyectos</button>
+        <button class="nav-item" data-page="request"><span>＋</span> Solicitud externa</button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="demo-chip">Datos demostrativos</div>
+        <button id="resetDemo" class="text-btn">Restaurar datos demo</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="openSidebar" class="icon-btn mobile-only" aria-label="Abrir menú">☰</button>
+          <div>
+            <p id="greeting" class="greeting">Buenas tardes</p>
+            <h2 id="pageTitle">Centro operativo</h2>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="search-wrap">
+            <span>⌕</span>
+            <input id="globalSearch" type="search" placeholder="Buscar proyecto, cliente o ubicación" aria-label="Buscar" />
+          </div>
+          <button id="quickCreate" class="btn btn-primary">+ Nueva oportunidad</button>
+          <div class="user-badge" title="Usuario demo">JD</div>
+        </div>
+      </header>
+
+      <section id="dashboard" class="page active" aria-labelledby="pageTitle">
+        <div class="hero-panel">
+          <div class="hero-grid" aria-hidden="true"></div>
+          <div class="hero-watermark" aria-hidden="true">FC</div>
+          <div class="hero-copy">
+            <p class="eyebrow">VISIÓN DE HOY</p>
+            <h3 id="heroGreeting">Buenas tardes. Estas son las oportunidades que necesitan movimiento.</h3>
+            <p>Priorizá relevamientos, presupuestos y seguimientos desde una sola vista.</p>
+          </div>
+          <div class="hero-stat">
+            <span>Próxima acción crítica</span>
+            <strong id="criticalAction">—</strong>
+            <small id="criticalActionMeta">—</small>
+          </div>
+        </div>
+
+        <div id="metrics" class="metrics-grid"></div>
+
+        <div class="content-grid two-thirds">
+          <article class="panel">
+            <div class="panel-head">
+              <div><p class="eyebrow">PRIORIDAD OPERATIVA</p><h3>Oportunidades que requieren atención</h3></div>
+              <button class="text-btn" data-go="opportunities">Ver todas</button>
+            </div>
+            <div id="attentionList" class="attention-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">PRÓXIMOS HITOS</p><h3>Agenda técnica y comercial</h3></div></div>
+            <div id="agendaList" class="agenda-list"></div>
+          </article>
+        </div>
+
+        <article class="panel pipeline-preview">
+          <div class="panel-head">
+            <div><p class="eyebrow">FLUJO COMERCIAL–TÉCNICO</p><h3>Estado de oportunidades</h3></div>
+            <button class="text-btn" data-go="pipeline">Abrir pipeline</button>
+          </div>
+          <div id="pipelinePreview" class="pipeline-preview-grid"></div>
+        </article>
+      </section>
+
+      <section id="opportunities" class="page">
+        <div class="page-intro">
+          <div><p class="eyebrow">EXPEDIENTES COMERCIALES</p><h3>Oportunidades</h3><p>Cada registro concentra información comercial, técnica, documental y de seguimiento.</p></div>
+          <button id="createOpportunity" class="btn btn-primary">+ Nueva oportunidad</button>
+        </div>
+        <div class="toolbar">
+          <div class="filter-row" id="statusFilters"></div>
+          <select id="ownerFilter" aria-label="Filtrar por responsable"></select>
+        </div>
+        <div id="opportunityTable" class="table-card"></div>
+      </section>
+
+      <section id="pipeline" class="page">
+        <div class="page-intro">
+          <div><p class="eyebrow">PIPELINE</p><h3>De oportunidad a proyecto</h3><p>Mové cada expediente al estado que corresponda. Los indicadores se actualizan automáticamente.</p></div>
+        </div>
+        <div id="kanban" class="kanban"></div>
+      </section>
+
+      <section id="followups" class="page">
+        <div class="page-intro">
+          <div><p class="eyebrow">PRÓXIMAS ACCIONES</p><h3>Seguimientos</h3><p>Qué necesita atención, cuándo y quién debe hacerlo.</p></div>
+        </div>
+        <div id="followupList" class="followup-list"></div>
+      </section>
+
+      <section id="projects" class="page">
+        <div class="page-intro"><div><p class="eyebrow">PROYECTOS</p><h3>Oportunidades aprobadas</h3><p>Resumen de las oportunidades que ya fueron convertidas en proyecto.</p></div></div>
+        <div id="projectGrid" class="project-grid"></div>
+      </section>
+
+      <section id="request" class="page">
+        <div class="request-layout">
+          <div class="request-copy">
+            <p class="eyebrow">FLUJO EXTERNO</p>
+            <h3>Solicitud de evaluación de proyecto</h3>
+            <p>Ejemplo de cómo una consulta externa puede ingresar estructurada al sistema interno sin mostrar decenas de campos a la vez.</p>
+            <ol class="steps-vertical" id="requestSteps">
+              <li class="active"><span>1</span> Contacto</li><li><span>2</span> Proyecto</li><li><span>3</span> Necesidad</li><li><span>4</span> Confirmación</li>
+            </ol>
+          </div>
+          <form id="requestForm" class="request-card" novalidate>
+            <div class="form-step active" data-step="1">
+              <p class="step-counter">Paso 1 de 4</p><h4>¿Con quién coordinamos?</h4>
+              <div class="form-grid two"><label>Nombre y apellido<input name="requestName" required placeholder="Ej. Ana López"></label><label>Empresa<input name="requestCompany" required placeholder="Ej. Desarrollo Norte"></label></div>
+              <div class="form-grid two"><label>Correo<input name="requestEmail" type="email" required placeholder="ana@empresa.com"></label><label>Teléfono<input name="requestPhone" required placeholder="0981 000 000"></label></div>
+            </div>
+            <div class="form-step" data-step="2">
+              <p class="step-counter">Paso 2 de 4</p><h4>Contanos sobre el proyecto</h4>
+              <div class="form-grid two"><label>Tipo de proyecto<select name="requestType" required><option value="">Seleccionar</option><option>Construcción nueva</option><option>Remodelación / adecuación</option><option>Mantenimiento edilicio</option><option>Infraestructura sanitaria</option><option>Infraestructura institucional</option><option>Otro</option></select></label><label>Ubicación<input name="requestLocation" required placeholder="Ciudad / zona"></label></div>
+              <div class="form-grid two"><label>Etapa actual<select name="requestStage"><option>Idea / evaluación</option><option>Anteproyecto</option><option>Proyecto definido</option><option>Licitación / concurso</option><option>Requiere relevamiento</option></select></label><label>Superficie aproximada<input name="requestArea" placeholder="Ej. 850 m²"></label></div>
+            </div>
+            <div class="form-step" data-step="3">
+              <p class="step-counter">Paso 3 de 4</p><h4>¿Qué necesitan resolver?</h4>
+              <label>Necesidad / alcance<textarea name="requestNeed" required rows="5" placeholder="Describí brevemente el trabajo a evaluar..."></textarea></label>
+              <div class="form-grid two"><label>Fecha estimada<input name="requestDate" type="date"></label><label>Documentación disponible<select name="requestDocs"><option>Sin documentación todavía</option><option>Fotografías</option><option>Planos</option><option>Planos + fotografías</option><option>Pliego / especificaciones</option></select></label></div>
+            </div>
+            <div class="form-step" data-step="4">
+              <p class="step-counter">Paso 4 de 4</p><h4>Revisá antes de enviar</h4>
+              <div id="requestSummary" class="summary-box"></div>
+              <p class="demo-note">En esta demo no se envían datos a servicios externos. La solicitud se guarda únicamente en este navegador y aparece en Oportunidades.</p>
+            </div>
+            <div class="form-actions"><button type="button" id="requestPrev" class="btn btn-secondary is-hidden">← Atrás</button><button type="button" id="requestNext" class="btn btn-primary">Continuar →</button><button type="submit" id="requestSubmit" class="btn btn-primary is-hidden">Enviar solicitud</button></div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop is-hidden" aria-hidden="true"></div>
+  <dialog id="opportunityModal" class="modal">
+    <div class="modal-head"><div><p class="eyebrow">EXPEDIENTE</p><h3 id="modalTitle">Oportunidad</h3></div><button class="icon-btn" data-close-modal aria-label="Cerrar">×</button></div>
+    <div id="opportunityDetail"></div>
+  </dialog>
+
+  <dialog id="formModal" class="modal modal-form">
+    <div class="modal-head"><div><p class="eyebrow">NUEVO REGISTRO</p><h3 id="formModalTitle">Nueva oportunidad</h3></div><button class="icon-btn" data-close-modal aria-label="Cerrar">×</button></div>
+    <form id="opportunityForm" novalidate>
+      <input type="hidden" name="id" />
+      <div class="form-grid two"><label>Cliente / entidad<input name="client" required></label><label>Contacto<input name="contact" required></label></div>
+      <div class="form-grid two"><label>Proyecto / necesidad<input name="name" required></label><label>Ubicación<input name="location" required></label></div>
+      <div class="form-grid two"><label>Tipo<select name="type" required><option>Construcción nueva</option><option>Remodelación / adecuación</option><option>Mantenimiento edilicio</option><option>Infraestructura sanitaria</option><option>Infraestructura institucional</option><option>Otro</option></select></label><label>Superficie estimada<input name="area" placeholder="Ej. 1.200 m²"></label></div>
+      <div class="form-grid two"><label>Estado<select name="status" id="formStatus"></select></label><label>Responsable<select name="owner" id="formOwner"></select></label></div>
+      <label>Alcance / necesidad<textarea name="need" rows="4" required></textarea></label>
+      <div class="form-grid two"><label>Valor estimado demostrativo<input name="value" type="number" min="0" step="1000000"></label><label>Próxima acción<input name="nextAction" placeholder="Ej. Coordinar relevamiento"></label></div>
+      <div class="form-grid two"><label>Fecha próxima acción<input name="nextDate" type="date"></label><label>Origen<select name="source"><option>Consulta directa</option><option>Referencia</option><option>Licitación / concurso</option><option>Formulario web</option><option>Otro</option></select></label></div>
+      <div class="form-actions end"><button type="button" class="btn btn-secondary" data-close-modal>Cancelar</button><button type="submit" class="btn btn-primary">Guardar oportunidad</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="actionModal" class="modal modal-small">
+    <div class="modal-head"><div><p class="eyebrow" id="actionEyebrow">ACCIÓN</p><h3 id="actionTitle">Registrar</h3></div><button class="icon-btn" data-close-modal aria-label="Cerrar">×</button></div>
+    <form id="actionForm"></form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+window.FC_DEMO = {
+  statuses:[
+    {id:'new',label:'Nueva solicitud'},
+    {id:'evaluation',label:'Evaluación inicial'},
+    {id:'info',label:'Pendiente de información'},
+    {id:'visit',label:'Relevamiento / visita'},
+    {id:'budget',label:'Presupuesto en preparación'},
+    {id:'proposal',label:'Propuesta presentada'},
+    {id:'followup',label:'Seguimiento'},
+    {id:'negotiation',label:'Negociación / aclaraciones'},
+    {id:'approved',label:'Aprobada'},
+    {id:'rejected',label:'No aprobada'},
+    {id:'project',label:'Proyecto iniciado'}
+  ],
+  owners:['Sin asignar','Arq. Laura M.','Ing. Diego R.','Ing. Mateo S.','Adm. Cecilia P.'],
+  opportunities:[
+    {id:'OP-2601',client:'Grupo Horizonte',contact:'María Torres',name:'Adecuación de oficinas administrativas',location:'Asunción',type:'Remodelación / adecuación',area:'780 m²',status:'proposal',owner:'Arq. Laura M.',need:'Reorganización de áreas de trabajo, sanitarios y actualización de terminaciones.',value:118000000,nextAction:'Confirmar recepción y consultas técnicas',nextDate:'2026-10-04',source:'Consulta directa',created:'2026-09-18',notes:['Se consolidó el alcance preliminar con el contacto.'],visits:[{date:'2026-09-24',time:'09:30',address:'Asunción',owner:'Arq. Laura M.',note:'Relevamiento general y registro fotográfico.'}],quotes:[{id:'COT-1041',status:'Enviada',date:'2026-10-01',items:[{concept:'Trabajos preliminares',unit:'gl',qty:1,price:18000000},{concept:'Adecuaciones interiores',unit:'gl',qty:1,price:64000000},{concept:'Terminaciones',unit:'gl',qty:1,price:36000000}]}],timeline:[{date:'2026-10-01',text:'Propuesta demostrativa marcada como enviada.'},{date:'2026-09-24',text:'Relevamiento técnico registrado.'},{date:'2026-09-18',text:'Oportunidad creada.'}]},
+    {id:'OP-2602',client:'Consorcio del Este',contact:'Jorge Vera',name:'Edificio de apoyo operativo',location:'Luque',type:'Construcción nueva',area:'1.450 m²',status:'visit',owner:'Ing. Diego R.',need:'Evaluación para edificio de apoyo con depósitos, oficinas y área técnica.',value:620000000,nextAction:'Realizar visita técnica',nextDate:'2026-10-05',source:'Referencia',created:'2026-09-20',notes:['Pendiente validar accesos y servicios existentes.'],visits:[{date:'2026-10-05',time:'08:00',address:'Luque',owner:'Ing. Diego R.',note:'Revisar terreno, accesos y acometidas.'}],quotes:[],timeline:[{date:'2026-09-28',text:'Visita técnica programada.'},{date:'2026-09-20',text:'Oportunidad creada.'}]},
+    {id:'OP-2603',client:'Fundación Buen Camino',contact:'Silvia Núñez',name:'Mejoramiento de centro comunitario',location:'San Lorenzo',type:'Infraestructura institucional',area:'520 m²',status:'budget',owner:'Ing. Mateo S.',need:'Reparación de cubierta, sanitarios, accesibilidad y adecuación eléctrica.',value:156000000,nextAction:'Cerrar cómputo preliminar',nextDate:'2026-10-03',source:'Consulta directa',created:'2026-09-13',notes:['Planos base recibidos.'],visits:[{date:'2026-09-19',time:'14:00',address:'San Lorenzo',owner:'Ing. Mateo S.',note:'Se identificaron patologías en cubierta.'}],quotes:[{id:'COT-1044',status:'En revisión',date:'2026-10-02',items:[{concept:'Reparación de cubierta',unit:'gl',qty:1,price:72000000},{concept:'Adecuación sanitaria',unit:'gl',qty:1,price:44000000}]}],timeline:[{date:'2026-10-02',text:'Cotización en revisión interna.'},{date:'2026-09-19',text:'Visita técnica realizada.'}]},
+    {id:'OP-2604',client:'Desarrollo Norte',contact:'Ana López',name:'Sistema sanitario para conjunto habitacional',location:'Mariano Roque Alonso',type:'Infraestructura sanitaria',area:'18 unidades',status:'evaluation',owner:'Ing. Diego R.',need:'Evaluación de redes internas, cámaras, conexión y solución de drenaje.',value:235000000,nextAction:'Solicitar planos de implantación',nextDate:'2026-10-06',source:'Formulario web',created:'2026-09-30',notes:[],visits:[],quotes:[],timeline:[{date:'2026-09-30',text:'Solicitud externa ingresada al sistema.'}]},
+    {id:'OP-2605',client:'Inversiones Delta',contact:'Pablo Sosa',name:'Mantenimiento integral de depósito',location:'Fernando de la Mora',type:'Mantenimiento edilicio',area:'2.100 m²',status:'followup',owner:'Arq. Laura M.',need:'Mantenimiento de cubierta, pintura, canaletas y sectores de piso.',value:98000000,nextAction:'Llamar por definición de alcance',nextDate:'2026-10-03',source:'Referencia',created:'2026-09-10',notes:['Propuesta presentada con dos alternativas de alcance.'],visits:[],quotes:[{id:'COT-1037',status:'Enviada',date:'2026-09-25',items:[{concept:'Mantenimiento general',unit:'gl',qty:1,price:98000000}]}],timeline:[{date:'2026-09-29',text:'Seguimiento registrado; cliente revisando alternativas.'}]},
+    {id:'OP-2606',client:'Centro Médico Sur',contact:'Claudia Benítez',name:'Adecuación de área de atención',location:'Asunción',type:'Remodelación / adecuación',area:'310 m²',status:'negotiation',owner:'Ing. Mateo S.',need:'Redistribución interior con prioridad en circulación, instalaciones y terminaciones.',value:142000000,nextAction:'Responder aclaración técnica',nextDate:'2026-10-04',source:'Consulta directa',created:'2026-09-06',notes:['Solicitaron alternativa por etapas.'],visits:[],quotes:[{id:'COT-1031',status:'Enviada',date:'2026-09-22',items:[{concept:'Adecuaciones interiores',unit:'gl',qty:1,price:142000000}]}],timeline:[{date:'2026-10-02',text:'Se recibió consulta sobre ejecución por etapas.'}]},
+    {id:'OP-2607',client:'Logística Central',contact:'Raúl Acosta',name:'Ampliación de playa operativa',location:'Capiatá',type:'Infraestructura institucional',area:'1.900 m²',status:'info',owner:'Sin asignar',need:'Ampliación de superficie operativa y drenaje perimetral.',value:310000000,nextAction:'Recibir levantamiento topográfico',nextDate:'2026-10-08',source:'Consulta directa',created:'2026-09-27',notes:[],visits:[],quotes:[],timeline:[{date:'2026-09-29',text:'Se solicitó información complementaria.'}]},
+    {id:'OP-2608',client:'Colegio San Marcos',contact:'Elena Franco',name:'Reparación y adecuación de bloque académico',location:'Lambaré',type:'Mantenimiento edilicio',area:'960 m²',status:'new',owner:'Sin asignar',need:'Reparaciones de humedad, pintura y adecuación de sanitarios.',value:86000000,nextAction:'Asignar responsable técnico',nextDate:'2026-10-03',source:'Formulario web',created:'2026-10-02',notes:[],visits:[],quotes:[],timeline:[{date:'2026-10-02',text:'Nueva solicitud recibida.'}]},
+    {id:'OP-2609',client:'Parque Industrial Uno',contact:'Miguel Rivas',name:'Nave de almacenamiento liviano',location:'Villeta',type:'Construcción nueva',area:'2.600 m²',status:'proposal',owner:'Ing. Diego R.',need:'Nave liviana con área logística y servicios básicos.',value:1380000000,nextAction:'Agendar reunión de revisión',nextDate:'2026-10-07',source:'Referencia',created:'2026-08-29',notes:[],visits:[],quotes:[{id:'COT-1024',status:'Enviada',date:'2026-09-27',items:[{concept:'Obra civil y estructura',unit:'gl',qty:1,price:1380000000}]}],timeline:[{date:'2026-09-27',text:'Propuesta demostrativa presentada.'}]},
+    {id:'OP-2610',client:'Instituto Técnico Metropolitano',contact:'Gabriel Ortiz',name:'Nuevo pabellón de talleres',location:'San Lorenzo',type:'Infraestructura institucional',area:'1.120 m²',status:'approved',owner:'Ing. Mateo S.',need:'Pabellón para talleres con aulas de apoyo y servicios.',value:790000000,nextAction:'Convertir a proyecto operativo',nextDate:'2026-10-03',source:'Licitación / concurso',created:'2026-08-18',notes:['Aprobación demostrativa registrada para mostrar conversión a proyecto.'],visits:[],quotes:[{id:'COT-1019',status:'Aceptada',date:'2026-09-18',items:[{concept:'Ejecución de obra',unit:'gl',qty:1,price:790000000}]}],timeline:[{date:'2026-10-02',text:'Oportunidad marcada como aprobada.'}]},
+    {id:'OP-2611',client:'Complejo Los Lapachos',contact:'Rosa Maidana',name:'Adecuación de quinchos y áreas sociales',location:'Areguá',type:'Remodelación / adecuación',area:'640 m²',status:'project',owner:'Arq. Laura M.',need:'Intervención de quinchos, sanitarios y áreas exteriores.',value:205000000,nextAction:'Reunión de inicio',nextDate:'2026-10-09',source:'Referencia',created:'2026-08-03',notes:[],visits:[],quotes:[{id:'COT-1012',status:'Aceptada',date:'2026-09-02',items:[{concept:'Remodelación integral',unit:'gl',qty:1,price:205000000}]}],timeline:[{date:'2026-09-30',text:'Convertida a proyecto.'}]},
+    {id:'OP-2612',client:'Servicios Río Verde',contact:'Tomás Pereira',name:'Reparación de cubiertas industriales',location:'Ñemby',type:'Mantenimiento edilicio',area:'3.000 m²',status:'rejected',owner:'Ing. Diego R.',need:'Reparación sectorizada de cubierta y canaletas.',value:125000000,nextAction:'Cerrar expediente',nextDate:'2026-10-06',source:'Consulta directa',created:'2026-08-12',notes:['No aprobada por reprogramación del cliente.'],visits:[],quotes:[],timeline:[{date:'2026-09-21',text:'Oportunidad marcada como no aprobada.'}]},
+    {id:'OP-2613',client:'Administración Central Plaza',contact:'Fabián Meza',name:'Adecuación de accesos y circulación',location:'Asunción',type:'Remodelación / adecuación',area:'420 m²',status:'visit',owner:'Arq. Laura M.',need:'Revisión de accesibilidad, circulaciones y sectores de ingreso.',value:112000000,nextAction:'Relevamiento de accesos',nextDate:'2026-10-06',source:'Consulta directa',created:'2026-09-26',notes:[],visits:[{date:'2026-10-06',time:'15:00',address:'Asunción',owner:'Arq. Laura M.',note:'Relevamiento de desniveles y circulaciones.'}],quotes:[],timeline:[{date:'2026-10-01',text:'Visita programada.'}]},
+    {id:'OP-2614',client:'Residencial Arapoty',contact:'Lorena Duarte',name:'Sala técnica y ampliación de servicios',location:'Luque',type:'Construcción nueva',area:'280 m²',status:'budget',owner:'Ing. Mateo S.',need:'Sala técnica, servicios complementarios y adecuación exterior.',value:174000000,nextAction:'Validar cantidades de obra',nextDate:'2026-10-05',source:'Referencia',created:'2026-09-17',notes:[],visits:[],quotes:[{id:'COT-1046',status:'Borrador',date:'2026-10-02',items:[{concept:'Obra civil',unit:'gl',qty:1,price:120000000},{concept:'Instalaciones',unit:'gl',qty:1,price:54000000}]}],timeline:[{date:'2026-10-02',text:'Cotización en borrador.'}]},
+    {id:'OP-2615',client:'Cooperativa Tres Fronteras',contact:'Nicolás Ayala',name:'Evaluación de sede administrativa',location:'Itauguá',type:'Infraestructura institucional',area:'890 m²',status:'evaluation',owner:'Sin asignar',need:'Evaluación de reforma y ampliación de sede.',value:260000000,nextAction:'Definir visita preliminar',nextDate:'2026-10-10',source:'Consulta directa',created:'2026-10-01',notes:[],visits:[],quotes:[],timeline:[{date:'2026-10-01',text:'Oportunidad creada.'}]}
+  ]
+};
+
+</script>
+<script>
+(() => {
+  'use strict';
+  const BASE = window.FC_DEMO;
+  const KEY='fc-demo-state-v1';
+  const clone = v => JSON.parse(JSON.stringify(v));
+  let state = load();
+  let currentPage='dashboard', statusFilter='all', ownerFilter='all', reqStep=1;
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const fmtMoney = n => new Intl.NumberFormat('es-PY',{style:'currency',currency:'PYG',maximumFractionDigits:0}).format(Number(n||0));
+  const today = () => new Date().toISOString().slice(0,10);
+  const statusLabel = id => BASE.statuses.find(s=>s.id===id)?.label || id;
+  const initials = n => String(n||'SA').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+  function load(){ try{const x=localStorage.getItem(KEY); return x?JSON.parse(x):{opportunities:clone(BASE.opportunities)};}catch{return {opportunities:clone(BASE.opportunities)}} }
+  function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+  function greet(){const h=new Date().getHours(); return h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches';}
+  function toast(msg,err=false){const t=$('#toast');t.textContent=msg;t.className='toast show'+(err?' error':'');setTimeout(()=>t.className='toast',2400)}
+  function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  function datePretty(d){if(!d)return 'Sin fecha'; const x=new Date(d+'T12:00:00'); return x.toLocaleDateString('es-PY',{day:'2-digit',month:'short',year:'numeric'});}
+  function dueClass(d){if(!d)return 'neutral'; if(d<today())return 'danger'; if(d===today())return 'warning'; return 'neutral'}
+
+  function init(){
+    $('#greeting').textContent=greet(); $('#heroGreeting').textContent=`${greet()}. Estas son las oportunidades que necesitan movimiento.`;
+    fillFormSelects(); wire(); renderAll();
+  }
+  function wire(){
+    $('#enterDemo').onclick=()=>{$('#login').classList.add('is-hidden');$('#app').classList.remove('is-hidden');localStorage.setItem('fc-entered','1')};
+    if(localStorage.getItem('fc-entered')){$('#login').classList.add('is-hidden');$('#app').classList.remove('is-hidden')}
+    $$('.nav-item').forEach(b=>b.onclick=()=>go(b.dataset.page));
+    $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+    $('#openSidebar').onclick=()=>$('#sidebar').classList.add('open'); $('#closeSidebar').onclick=()=>$('#sidebar').classList.remove('open');
+    $('#quickCreate').onclick=openCreate; $('#createOpportunity').onclick=openCreate;
+    $('#resetDemo').onclick=()=>{if(confirm('¿Restaurar todos los datos demostrativos? Se perderán los cambios locales.')){state={opportunities:clone(BASE.opportunities)};save();renderAll();toast('Datos demo restaurados')}};
+    $('#ownerFilter').onchange=e=>{ownerFilter=e.target.value;renderOpportunities()};
+    $('#globalSearch').oninput=e=>{if(e.target.value.trim())go('opportunities'); renderOpportunities(e.target.value.trim())};
+    $('#opportunityForm').onsubmit=saveOpportunity;
+    $$('[data-close-modal]').forEach(b=>b.onclick=closeModals); $('#modalBackdrop').onclick=closeModals;
+    $('#requestNext').onclick=nextRequest; $('#requestPrev').onclick=prevRequest; $('#requestForm').onsubmit=submitRequest;
+  }
+  function go(page){currentPage=page; $$('.page').forEach(p=>p.classList.remove('active')); $('#'+page).classList.add('active'); $$('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page)); $('#sidebar').classList.remove('open'); const map={dashboard:'Centro operativo',opportunities:'Oportunidades',pipeline:'Pipeline',followups:'Seguimientos',projects:'Proyectos',request:'Solicitud externa'};$('#pageTitle').textContent=map[page]||page; if(page==='opportunities')renderOpportunities(); if(page==='pipeline')renderPipeline(); if(page==='followups')renderFollowups(); if(page==='projects')renderProjects();}
+  function fillFormSelects(){
+    $('#formStatus').innerHTML=BASE.statuses.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
+    $('#formOwner').innerHTML=BASE.owners.map(o=>`<option>${o}</option>`).join('');
+    $('#ownerFilter').innerHTML='<option value="all">Todos los responsables</option>'+BASE.owners.map(o=>`<option>${o}</option>`).join('');
+    $('#statusFilters').innerHTML=['all',...BASE.statuses.map(s=>s.id)].map(id=>`<button class="filter-chip ${id==='all'?'active':''}" data-status="${id}">${id==='all'?'Todos':statusLabel(id)}</button>`).join('');
+    $('#statusFilters').onclick=e=>{const b=e.target.closest('[data-status]'); if(!b)return;statusFilter=b.dataset.status; $$('#statusFilters .filter-chip').forEach(x=>x.classList.toggle('active',x===b)); renderOpportunities();}
+  }
+  function renderAll(){renderDashboard();renderOpportunities();renderPipeline();renderFollowups();renderProjects();$('#navOpportunityCount').textContent=state.opportunities.filter(o=>!['rejected','project'].includes(o.status)).length}
+  function renderDashboard(){
+    const ops=state.opportunities, active=ops.filter(o=>!['rejected','project'].includes(o.status));
+    const metrics=[['Nuevas',ops.filter(o=>o.status==='new').length,'Solicitudes sin evaluar'],['Visitas',ops.filter(o=>o.status==='visit').length,'Relevamientos abiertos'],['Presupuestos',ops.filter(o=>o.status==='budget').length,'En preparación'],['Propuestas',ops.filter(o=>o.status==='proposal').length,'Presentadas'],['Seguimientos',ops.filter(o=>['followup','negotiation'].includes(o.status)).length,'Requieren contacto'],['Valor potencial',fmtMoney(active.reduce((a,o)=>a+Number(o.value||0),0)),'Datos demostrativos']];
+    $('#metrics').innerHTML=metrics.map(m=>`<div class="metric"><div class="metric-top"><span>${m[0]}</span><i class="metric-dot"></i></div><strong>${m[1]}</strong><small>${m[2]}</small></div>`).join('');
+    const att=active.filter(o=>o.nextDate).sort((a,b)=>a.nextDate.localeCompare(b.nextDate)).slice(0,5); $('#criticalAction').textContent=att[0]?.nextAction||'Sin acciones';$('#criticalActionMeta').textContent=att[0]?`${att[0].name} · ${datePretty(att[0].nextDate)}`:'—';
+    $('#attentionList').innerHTML=att.map(o=>`<div class="attention-item"><div class="attention-main"><strong>${esc(o.name)}</strong><span>${esc(o.client)} · ${esc(o.location)} · ${esc(o.owner)}</span></div><div class="attention-meta"><span class="badge ${dueClass(o.nextDate)}">${datePretty(o.nextDate)}</span><button class="row-action" data-open="${o.id}">Abrir</button></div></div>`).join('')||'<div class="empty">Sin pendientes.</div>';
+    $('#attentionList').onclick=e=>{const b=e.target.closest('[data-open]');if(b)openDetail(b.dataset.open)};
+    const ag=ops.flatMap(o=>(o.visits||[]).map(v=>({...v,opp:o}))).sort((a,b)=>a.date.localeCompare(b.date)).filter(v=>v.date>=today()).slice(0,5); $('#agendaList').innerHTML=ag.map(v=>`<div class="agenda-item"><div class="date-box"><strong>${new Date(v.date+'T12:00').getDate()}</strong><small>${new Date(v.date+'T12:00').toLocaleDateString('es-PY',{month:'short'})}</small></div><div><strong>${esc(v.opp.name)}</strong><span>${v.time} · ${esc(v.address)} · ${esc(v.owner)}</span></div></div>`).join('')||'<div class="empty">Sin visitas próximas.</div>';
+    const preview=['new','visit','budget','proposal','followup','approved']; $('#pipelinePreview').innerHTML=preview.map(id=>`<div class="stage-mini"><span>${statusLabel(id)}</span><strong>${ops.filter(o=>o.status===id).length}</strong></div>`).join('');
+  }
+  function getFiltered(search=''){let x=[...state.opportunities]; if(statusFilter!=='all')x=x.filter(o=>o.status===statusFilter); if(ownerFilter!=='all')x=x.filter(o=>o.owner===ownerFilter); const q=(search||$('#globalSearch')?.value||'').toLowerCase(); if(q)x=x.filter(o=>[o.id,o.client,o.contact,o.name,o.location,o.type,o.owner].some(v=>String(v||'').toLowerCase().includes(q))); return x;}
+  function renderOpportunities(search=''){
+    const rows=getFiltered(search); $('#opportunityTable').innerHTML=rows.length?`<table class="data-table"><thead><tr><th>Oportunidad</th><th>Cliente</th><th>Estado</th><th>Responsable</th><th>Próxima acción</th><th></th></tr></thead><tbody>${rows.map(o=>`<tr><td data-label="Oportunidad"><div class="cell-title">${esc(o.name)}</div><div class="cell-sub">${o.id} · ${esc(o.location)}</div></td><td data-label="Cliente">${esc(o.client)}</td><td data-label="Estado"><span class="status-badge badge neutral">${statusLabel(o.status)}</span></td><td data-label="Responsable">${esc(o.owner)}</td><td data-label="Próxima acción"><div>${esc(o.nextAction||'—')}</div><div class="cell-sub">${datePretty(o.nextDate)}</div></td><td data-label="Acción"><button class="row-action" data-open="${o.id}">Abrir expediente</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No hay oportunidades con estos filtros.</div>';
+    $('#opportunityTable').onclick=e=>{const b=e.target.closest('[data-open]');if(b)openDetail(b.dataset.open)};
+  }
+  function renderPipeline(){
+    const ids=['new','evaluation','visit','budget','proposal','followup','negotiation','approved','project']; $('#kanban').innerHTML=ids.map(id=>{const items=state.opportunities.filter(o=>o.status===id);return `<div class="kanban-col"><div class="kanban-head"><strong>${statusLabel(id)}</strong><span class="kanban-count">${items.length}</span></div>${items.map(o=>`<div class="kanban-card"><h4>${esc(o.name)}</h4><p>${esc(o.client)} · ${esc(o.location)}</p><div class="kanban-card-foot"><span class="avatar">${initials(o.owner)}</span><select data-pipe="${o.id}" aria-label="Cambiar estado">${BASE.statuses.map(s=>`<option value="${s.id}" ${s.id===o.status?'selected':''}>${s.label}</option>`).join('')}</select></div></div>`).join('')||'<div class="empty">Sin registros</div>'}</div>`}).join('');
+    $('#kanban').onchange=e=>{const s=e.target.closest('[data-pipe]');if(!s)return; changeStatus(s.dataset.pipe,s.value)};
+  }
+  function renderFollowups(){const x=state.opportunities.filter(o=>o.nextAction&&o.nextDate&&!['rejected','project'].includes(o.status)).sort((a,b)=>a.nextDate.localeCompare(b.nextDate)); $('#followupList').innerHTML=x.map(o=>`<div class="followup-card"><div class="followup-date"><span class="badge ${dueClass(o.nextDate)}">${datePretty(o.nextDate)}</span></div><div><h4>${esc(o.nextAction)}</h4><p>${esc(o.name)} · ${esc(o.client)} · Responsable: ${esc(o.owner)}</p></div><button class="btn btn-secondary" data-open="${o.id}">Abrir expediente</button></div>`).join('')||'<div class="empty">Sin seguimientos pendientes.</div>'; $('#followupList').onclick=e=>{const b=e.target.closest('[data-open]');if(b)openDetail(b.dataset.open)}}
+  function renderProjects(){const x=state.opportunities.filter(o=>o.status==='project'); $('#projectGrid').innerHTML=x.map(o=>`<article class="project-card"><p class="eyebrow">${o.id} · DATO DEMOSTRATIVO</p><h4>${esc(o.name)}</h4><p>${esc(o.client)} · ${esc(o.location)}</p><div class="project-meta"><div><span>Responsable</span><strong>${esc(o.owner)}</strong></div><div><span>Valor demo</span><strong>${fmtMoney(o.value)}</strong></div><div><span>Tipo</span><strong>${esc(o.type)}</strong></div><div><span>Próxima acción</span><strong>${esc(o.nextAction||'Definir inicio')}</strong></div></div><div class="detail-actions"><button class="row-action" data-open="${o.id}">Ver expediente</button></div></article>`).join('')||'<div class="empty">Todavía no hay oportunidades convertidas en proyecto.</div>'; $('#projectGrid').onclick=e=>{const b=e.target.closest('[data-open]');if(b)openDetail(b.dataset.open)}}
+  function openCreate(){const f=$('#opportunityForm');f.reset();f.elements.id.value='';$('#formModalTitle').textContent='Nueva oportunidad';$('#formStatus').value='new';$('#formOwner').value='Sin asignar';openModal($('#formModal'))}
+  function saveOpportunity(e){e.preventDefault();const f=e.currentTarget;if(!f.reportValidity())return;const d=Object.fromEntries(new FormData(f).entries()); let o;if(d.id){o=state.opportunities.find(x=>x.id===d.id);Object.assign(o,d,{value:Number(d.value||0)});o.timeline=o.timeline||[];o.timeline.unshift({date:today(),text:'Datos de la oportunidad actualizados.'})}else{const next=2600+state.opportunities.length+1;o={...d,id:'OP-'+next,value:Number(d.value||0),created:today(),notes:[],visits:[],quotes:[],timeline:[{date:today(),text:'Oportunidad creada.'}]};state.opportunities.unshift(o)}save();closeModals();renderAll();toast(d.id?'Oportunidad actualizada':'Oportunidad creada')}
+  function openDetail(id){const o=state.opportunities.find(x=>x.id===id);if(!o)return;$('#modalTitle').textContent=o.id; $('#opportunityDetail').innerHTML=`<div class="detail-shell"><div class="detail-hero"><div><span class="status-badge badge neutral">${statusLabel(o.status)}</span><h4>${esc(o.name)}</h4><p>${esc(o.client)} · ${esc(o.location)} · ${esc(o.type)}</p></div><div class="detail-value"><span>VALOR ESTIMADO · DATO DEMOSTRATIVO</span><strong>${fmtMoney(o.value)}</strong></div></div><div class="detail-tabs"><button class="detail-tab active" data-tab="overview">Resumen</button><button class="detail-tab" data-tab="timeline">Actividad</button><button class="detail-tab" data-tab="quotes">Cotización</button></div><div class="detail-pane active" data-pane="overview"><div class="detail-grid"><div class="detail-field"><span>Cliente / entidad</span><strong>${esc(o.client)}</strong></div><div class="detail-field"><span>Contacto</span><strong>${esc(o.contact)}</strong></div><div class="detail-field"><span>Responsable</span><strong>${esc(o.owner)}</strong></div><div class="detail-field"><span>Superficie</span><strong>${esc(o.area||'No indicada')}</strong></div><div class="detail-field"><span>Origen</span><strong>${esc(o.source||'—')}</strong></div><div class="detail-field"><span>Próxima acción</span><strong>${esc(o.nextAction||'—')} · ${datePretty(o.nextDate)}</strong></div></div><div class="detail-field" style="margin-top:10px"><span>Alcance / necesidad</span><strong>${esc(o.need)}</strong></div><div class="detail-actions"><button class="btn btn-secondary" data-action="edit" data-id="${o.id}">Editar</button><button class="btn btn-secondary" data-action="note" data-id="${o.id}">+ Nota</button><button class="btn btn-secondary" data-action="visit" data-id="${o.id}">Programar visita</button><button class="btn btn-secondary" data-action="followup" data-id="${o.id}">Crear seguimiento</button><button class="btn btn-secondary" data-action="quote" data-id="${o.id}">Crear cotización</button>${o.status==='approved'?`<button class="btn btn-primary" data-action="project" data-id="${o.id}">Convertir en proyecto</button>`:''}</div></div><div class="detail-pane" data-pane="timeline"><div class="timeline">${[...(o.notes||[]).map(n=>({date:today(),text:'Nota interna: '+n})),...(o.timeline||[])].map(t=>`<div class="timeline-item"><strong>${esc(t.text)}</strong><span>${datePretty(t.date)}</span></div>`).join('')||'<div class="empty">Sin actividad.</div>'}</div></div><div class="detail-pane" data-pane="quotes">${renderQuotes(o)}</div></div>`;
+    $('#opportunityDetail').onclick=e=>{const tab=e.target.closest('[data-tab]');if(tab){$$('#opportunityDetail .detail-tab').forEach(x=>x.classList.toggle('active',x===tab));$$('#opportunityDetail .detail-pane').forEach(x=>x.classList.toggle('active',x.dataset.pane===tab.dataset.tab));return}const a=e.target.closest('[data-action]');if(a)handleAction(a.dataset.action,a.dataset.id)}; openModal($('#opportunityModal'));
+  }
+  function renderQuotes(o){if(!o.quotes?.length)return '<div class="empty">Todavía no hay cotizaciones demostrativas en este expediente.</div>'; return o.quotes.map(q=>`<div style="margin-bottom:18px"><div class="panel-head"><div><strong>${q.id}</strong><div class="cell-sub">${q.status} · ${datePretty(q.date)} · Datos demostrativos</div></div><strong>${fmtMoney(q.items.reduce((a,i)=>a+i.qty*i.price,0))}</strong></div><table class="quote-table"><thead><tr><th>Concepto</th><th>Unidad</th><th>Cant.</th><th>Precio demo</th><th>Subtotal</th></tr></thead><tbody>${q.items.map(i=>`<tr><td>${esc(i.concept)}</td><td>${esc(i.unit)}</td><td>${i.qty}</td><td>${fmtMoney(i.price)}</td><td>${fmtMoney(i.qty*i.price)}</td></tr>`).join('')}</tbody></table></div>`).join('')}
+  function openModal(d){$('#modalBackdrop').classList.remove('is-hidden'); if(!d.open)d.showModal();}
+  function closeModals(){$('#modalBackdrop').classList.add('is-hidden');$$('dialog[open]').forEach(d=>d.close())}
+  function handleAction(action,id){const o=state.opportunities.find(x=>x.id===id); if(action==='edit'){const f=$('#opportunityForm');for(const [k,v] of Object.entries(o)){if(f.elements[k])f.elements[k].value=v??''}$('#formModalTitle').textContent='Editar oportunidad';closeModals();openModal($('#formModal'));return}if(action==='project'){o.status='project';o.timeline.unshift({date:today(),text:'Oportunidad convertida en proyecto.'});save();closeModals();renderAll();toast('Convertida en proyecto');return}openAction(action,o)}
+  function openAction(action,o){const titles={note:'Agregar nota interna',visit:'Programar visita técnica',followup:'Crear seguimiento',quote:'Crear cotización demostrativa'};$('#actionTitle').textContent=titles[action];$('#actionEyebrow').textContent=o.id;const f=$('#actionForm');f.dataset.action=action;f.dataset.id=o.id;if(action==='note')f.innerHTML=`<label>Nota<textarea name="note" required rows="5" placeholder="Observación interna..."></textarea></label>${actionButtons()}`;if(action==='visit')f.innerHTML=`<div class="form-grid two"><label>Fecha<input name="date" type="date" required></label><label>Hora<input name="time" type="time" required></label></div><label>Dirección / ubicación<input name="address" required value="${esc(o.location)}"></label><label>Responsable<select name="owner">${BASE.owners.map(x=>`<option ${x===o.owner?'selected':''}>${x}</option>`).join('')}</select></label><label>Observaciones<textarea name="note" rows="3"></textarea></label>${actionButtons()}`;if(action==='followup')f.innerHTML=`<label>Próxima acción<input name="nextAction" required value="${esc(o.nextAction||'')}"></label><label>Fecha<input name="nextDate" type="date" required value="${esc(o.nextDate||'')}"></label>${actionButtons()}`;if(action==='quote')f.innerHTML=`<p class="demo-note" style="margin-top:0">Los importes se presentan exclusivamente como datos demostrativos.</p><label>Concepto<input name="concept" required placeholder="Ej. Obra civil"></label><div class="form-grid two"><label>Unidad<input name="unit" value="gl" required></label><label>Cantidad<input name="qty" type="number" min="1" value="1" required></label></div><label>Precio demostrativo (Gs.)<input name="price" type="number" min="0" step="100000" required></label>${actionButtons()}`;f.onsubmit=saveAction;closeModals();openModal($('#actionModal'))}
+  function actionButtons(){return `<div class="form-actions end"><button type="button" class="btn btn-secondary" data-close-modal>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div>`}
+  function saveAction(e){e.preventDefault();const f=e.currentTarget;if(!f.reportValidity())return;const o=state.opportunities.find(x=>x.id===f.dataset.id),d=Object.fromEntries(new FormData(f));const a=f.dataset.action;if(a==='note'){o.notes=o.notes||[];o.notes.unshift(d.note);o.timeline.unshift({date:today(),text:'Nota interna agregada.'})}if(a==='visit'){o.visits=o.visits||[];o.visits.push(d);o.status='visit';o.nextAction='Realizar visita técnica';o.nextDate=d.date;o.timeline.unshift({date:today(),text:`Visita técnica programada para ${datePretty(d.date)}.`})}if(a==='followup'){o.nextAction=d.nextAction;o.nextDate=d.nextDate;if(!['approved','project','rejected'].includes(o.status))o.status='followup';o.timeline.unshift({date:today(),text:`Seguimiento programado: ${d.nextAction}.`})}if(a==='quote'){o.quotes=o.quotes||[];o.quotes.push({id:'COT-'+(1040+o.quotes.length+state.opportunities.reduce((n,x)=>n+(x.quotes?.length||0),0)),status:'Borrador',date:today(),items:[{concept:d.concept,unit:d.unit,qty:Number(d.qty),price:Number(d.price)}]});o.status='budget';o.timeline.unshift({date:today(),text:'Cotización demostrativa creada en borrador.'})}save();closeModals();renderAll();toast('Registro guardado')}
+  function changeStatus(id,status){const o=state.opportunities.find(x=>x.id===id);if(!o)return;o.status=status;o.timeline.unshift({date:today(),text:`Estado actualizado a ${statusLabel(status)}.`});save();renderAll();toast('Estado actualizado')}
+  function nextRequest(){const step=$(`.form-step[data-step="${reqStep}"]`); const fields=[...step.querySelectorAll('[required]')];if(fields.some(x=>!x.checkValidity())){fields.find(x=>!x.checkValidity())?.reportValidity();return}if(reqStep<4){reqStep++;renderRequestStep();if(reqStep===4)buildRequestSummary()}}
+  function prevRequest(){if(reqStep>1){reqStep--;renderRequestStep()}}
+  function renderRequestStep(){$$('.form-step').forEach(x=>x.classList.toggle('active',Number(x.dataset.step)===reqStep));$$('#requestSteps li').forEach((x,i)=>x.classList.toggle('active',i+1<=reqStep));$('#requestPrev').classList.toggle('is-hidden',reqStep===1);$('#requestNext').classList.toggle('is-hidden',reqStep===4);$('#requestSubmit').classList.toggle('is-hidden',reqStep!==4)}
+  function buildRequestSummary(){const d=Object.fromEntries(new FormData($('#requestForm')));$('#requestSummary').innerHTML=[['Contacto',d.requestName],['Empresa',d.requestCompany],['Proyecto',d.requestType],['Ubicación',d.requestLocation],['Etapa',d.requestStage],['Superficie',d.requestArea||'No indicada'],['Necesidad',d.requestNeed]].map(r=>`<div class="summary-row"><span>${r[0]}</span><strong>${esc(r[1]||'—')}</strong></div>`).join('')}
+  function submitRequest(e){e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget));const id='OP-'+(2600+state.opportunities.length+1);state.opportunities.unshift({id,client:d.requestCompany,contact:d.requestName,name:d.requestType+' — '+d.requestCompany,location:d.requestLocation,type:d.requestType,area:d.requestArea||'No indicada',status:'new',owner:'Sin asignar',need:d.requestNeed,value:0,nextAction:'Evaluar nueva solicitud',nextDate:today(),source:'Formulario web',created:today(),notes:[`Contacto: ${d.requestEmail} · ${d.requestPhone}. Documentación declarada: ${d.requestDocs}.`],visits:[],quotes:[],timeline:[{date:today(),text:'Solicitud externa ingresada desde el formulario demo.'}]});save();e.currentTarget.reset();reqStep=1;renderRequestStep();renderAll();go('opportunities');toast(`Solicitud ${id} creada en Oportunidades`)}
+  init();
+})();
+
+</script>
+</body>
+</html>
