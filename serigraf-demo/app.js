@@ -1,113 +1,100 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111827" />
-  <title>Serigraf S.R.L. — Demo de gestión de pedidos</title>
-  <meta name="description" content="Demo conceptual y funcional de gestión de pedidos, cotizaciones, archivos, aprobaciones y producción para Serigraf S.R.L." />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111827'/%3E%3Cpath d='M17 20h30v7H27v6h17v7H27v4h20v7H17z' fill='%23fff'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-<div class="mobile-overlay" id="mobileOverlay"></div>
-<div class="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand"><div class="brandmark">S</div><div><strong>SERIGRAF</strong><small>Gestión de producción</small></div></div>
-    <nav class="nav" id="nav">
-      <button class="active" data-view="dashboard"><span class="dot"></span>Resumen</button>
-      <button data-view="orders"><span class="dot"></span>Pedidos y cotizaciones</button>
-      <button data-view="production"><span class="dot"></span>Producción</button>
-      <button data-view="client"><span class="dot"></span>Portal del cliente</button>
-    </nav>
-    <div class="side-note"><strong>Demo conceptual funcional</strong>Los datos, clientes, responsables, importes y pedidos visibles son simulados para demostrar el flujo. No representan información operativa real de Serigraf.</div>
-  </aside>
+(() => {
+  'use strict';
+  const STORAGE = 'serigraf-demo-v3';
+  const statuses = ['Nuevo','En revisión','Falta información','Cotización preparada','Cotización enviada','Esperando aprobación','Aprobado','Preparación de archivo','Producción','Control de calidad','Listo para retirar / entregar','Finalizado'];
+  const productionGroups = [
+    {name:'Aprobados / preprensa', statuses:['Aprobado','Preparación de archivo']},
+    {name:'En producción', statuses:['Producción']},
+    {name:'Control / entrega', statuses:['Control de calidad','Listo para retirar / entregar']},
+    {name:'Finalizados', statuses:['Finalizado']}
+  ];
+  const baseOrders = [
+    {id:'SG-2026-0151',client:'Cliente Corporativo Demo 01',contact:'Área de Comunicación',email:'demo01@example.com',phone:'0981 000 001',type:'Libro / revista / manual',product:'Manual institucional A4',qty:800,size:'A4 · 64 páginas',material:'Tapa couché 300 g / interior 115 g',finish:'Laminado mate + lomo PUR',colors:'4/4 color frente y dorso',due:'2026-10-14',delivery:'Entrega coordinada',file:'manual_v6.pdf',notes:'Requiere prueba digital previa a producción.',status:'Esperando aprobación',priority:'Alta',owner:'Patrocinio',quote:12800000,quoteValidity:'10 días',quoteNote:'Producción completa según especificaciones indicadas.',quoteApproved:false,artApproved:true,created:'2026-10-03T09:10:00-03:00',timeline:[{at:'05/10 09:20',text:'Cotización enviada al cliente'},{at:'04/10 16:45',text:'Archivo revisado y apto para prueba'},{at:'03/10 09:10',text:'Solicitud recibida'}]},
+    {id:'SG-2026-0152',client:'Cliente Corporativo Demo 02',contact:'Marketing',email:'demo02@example.com',phone:'0981 000 002',type:'Cartelería / señalética',product:'Cartelería exterior para sucursal',qty:12,size:'120 × 80 cm',material:'PVC espumado 5 mm + vinilo',finish:'Laminado UV',colors:'4/0 color frente',due:'2026-10-10',delivery:'Retiro en local',file:'carteleria_final.ai',notes:'Validar textos de dos piezas antes de imprimir.',status:'Producción',priority:'Alta',owner:'Cristino',quote:4950000,quoteValidity:'15 días',quoteNote:'Incluye impresión, montaje en PVC y terminación.',quoteApproved:true,artApproved:true,created:'2026-10-01T11:30:00-03:00',timeline:[{at:'05/10 08:40',text:'Trabajo ingresó a producción'},{at:'04/10 10:15',text:'Cliente aprobó arte final'},{at:'03/10 14:20',text:'Cliente aprobó cotización'},{at:'01/10 11:30',text:'Solicitud recibida'}]},
+    {id:'SG-2026-0153',client:'Cliente Corporativo Demo 03',contact:'Administración',email:'demo03@example.com',phone:'0981 000 003',type:'Papelería institucional',product:'Carpetas y hojas membretadas',qty:1200,size:'Carpeta A4 + hoja A4',material:'Cartulina 300 g / obra 90 g',finish:'Troquelado + plastificado',colors:'4/0 color frente',due:'2026-10-18',delivery:'A definir',file:'identidad_corporativa.zip',notes:'El cliente solicita dos alternativas de terminación.',status:'En revisión',priority:'Media',owner:'Sin asignar',quote:null,quoteValidity:'',quoteNote:'',quoteApproved:false,artApproved:false,created:'2026-10-05T08:25:00-03:00',timeline:[{at:'05/10 08:25',text:'Solicitud recibida'}]},
+    {id:'SG-2026-0154',client:'Cliente Corporativo Demo 04',contact:'Compras',email:'demo04@example.com',phone:'0981 000 004',type:'Etiquetas / adhesivos',product:'Etiquetas autoadhesivas troqueladas',qty:5000,size:'7 × 4 cm',material:'BOPP blanco',finish:'Troquelado individual',colors:'4/0 color frente',due:'2026-10-09',delivery:'Entrega coordinada',file:'etiquetas.pdf',notes:'Muestra física aprobada.',status:'Control de calidad',priority:'Alta',owner:'María',quote:3650000,quoteValidity:'7 días',quoteNote:'Incluye troquel y producción completa.',quoteApproved:true,artApproved:true,created:'2026-09-30T15:00:00-03:00',timeline:[{at:'05/10 09:05',text:'Producción completada; pasa a control de calidad'},{at:'03/10 11:00',text:'Inició producción'},{at:'02/10 13:10',text:'Aprobación completa del cliente'}]},
+    {id:'SG-2026-0155',client:'Cliente Corporativo Demo 05',contact:'Editorial',email:'demo05@example.com',phone:'0981 000 005',type:'Libro / revista / manual',product:'Revista corporativa',qty:300,size:'A4 · 32 páginas',material:'Couché 170 g',finish:'Dos grapas',colors:'4/4 color frente y dorso',due:'2026-10-16',delivery:'Retiro en local',file:'revista_borrador.pdf',notes:'Faltan dos páginas corregidas.',status:'Falta información',priority:'Media',owner:'Patrocinio',quote:null,quoteValidity:'',quoteNote:'',quoteApproved:false,artApproved:false,created:'2026-10-04T14:15:00-03:00',timeline:[{at:'05/10 08:15',text:'Se solicitó corrección de páginas 12 y 18'},{at:'04/10 14:15',text:'Solicitud recibida'}]},
+    {id:'SG-2026-0156',client:'Cliente Corporativo Demo 06',contact:'Marketing',email:'demo06@example.com',phone:'0981 000 006',type:'Material promocional',product:'Flyers promocionales',qty:2500,size:'A5',material:'Couché 150 g',finish:'Corte recto',colors:'4/4 color frente y dorso',due:'2026-10-07',delivery:'Retiro en local',file:'flyer_ok.pdf',notes:'Trabajo terminado.',status:'Finalizado',priority:'Baja',owner:'Cristino',quote:1450000,quoteValidity:'7 días',quoteNote:'',quoteApproved:true,artApproved:true,created:'2026-09-28T09:30:00-03:00',timeline:[{at:'04/10 12:30',text:'Pedido entregado y finalizado'},{at:'03/10 16:10',text:'Control de calidad aprobado'}]}
+  ];
+  const clone = x => JSON.parse(JSON.stringify(x));
+  let orders = load();
+  let currentView = 'dashboard';
+  let selectedId = orders[0]?.id || null;
+  let detailId = null;
+  let quoteId = null;
 
-  <main class="main">
-    <header class="topbar">
-      <div class="top-left"><button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button><div><h1 id="pageTitle">Resumen operativo</h1><p>Pedidos · archivos · cotizaciones · aprobaciones · producción</p></div></div>
-      <div class="top-actions"><button class="btn" id="resetBtn">Restaurar demo</button><button class="btn primary" id="newOrderBtn">+ Nuevo pedido</button></div>
-    </header>
+  const $ = id => document.getElementById(id);
+  const fmtGs = n => n == null ? 'Pendiente' : new Intl.NumberFormat('es-PY',{style:'currency',currency:'PYG',maximumFractionDigits:0}).format(n);
+  const fmtDate = d => { if(!d) return '—'; const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; };
+  const initials = name => (name||'?').split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+  function load(){ try{const raw=localStorage.getItem(STORAGE); return raw?JSON.parse(raw):clone(baseOrders)}catch(e){return clone(baseOrders)} }
+  function save(){ localStorage.setItem(STORAGE,JSON.stringify(orders)); }
+  function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>t.classList.remove('show'),2200); }
+  function statusClass(s){ if(s==='Nuevo')return's-new';if(s==='En revisión')return's-review';if(s==='Falta información')return's-info';if(s.includes('Cotización'))return's-quote';if(s==='Esperando aprobación')return's-approval';if(s==='Aprobado')return's-approved';if(s==='Preparación de archivo')return's-file';if(s==='Producción')return's-production';if(s==='Control de calidad')return's-quality';if(s.startsWith('Listo'))return's-ready';return's-done'; }
+  function priorityClass(p){return p==='Alta'?'p-high':p==='Media'?'p-med':'p-low'}
+  function progressFor(s){ const i=Math.max(0,statuses.indexOf(s)); return Math.round((i/(statuses.length-1))*100); }
+  function nextStatus(s){ const i=statuses.indexOf(s); return i<0||i>=statuses.length-1?s:statuses[i+1]; }
+  function addTimeline(order,text){ const now=new Date(); const stamp=now.toLocaleDateString('es-PY',{day:'2-digit',month:'2-digit'})+' '+now.toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'}); order.timeline=order.timeline||[]; order.timeline.unshift({at:stamp,text}); }
 
-    <div class="content">
-      <section class="view active" id="view-dashboard">
-        <div class="hero">
-          <div class="eyebrow">SERIGRAF S.R.L. · DEMO DE SISTEMA</div>
-          <h2>Un solo flujo para recibir el trabajo, cotizarlo, aprobarlo y llevarlo hasta producción.</h2>
-          <p>La propuesta centraliza solicitudes, especificaciones, archivos, presupuesto, aprobación del cliente, responsables y estado de producción sin depender de conversaciones dispersas.</p>
-          <div class="hero-meta"><span class="chip">Impresión y trabajos gráficos</span><span class="chip">Aprobaciones trazables</span><span class="chip">Vista cliente + vista interna</span><span class="chip">Persistencia local de la demo</span></div>
-        </div>
-        <div class="kpis" id="kpis"></div>
-        <div class="grid-2">
-          <div class="card"><div class="card-head"><div><h3>Pipeline de trabajos</h3><p>Distribución actual de los pedidos de demostración.</p></div><span class="demo-label">datos demo</span></div><div class="card-body"><div class="pipeline" id="pipeline"></div></div></div>
-          <div class="card"><div class="card-head"><div><h3>Actividad reciente</h3><p>Últimos movimientos registrados.</p></div></div><div class="card-body"><div class="activity" id="activity"></div></div></div>
-        </div>
-      </section>
+  function switchView(view){ currentView=view; document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); $('view-'+view).classList.add('active'); document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view)); const titles={dashboard:'Resumen operativo',orders:'Pedidos y cotizaciones',production:'Producción',client:'Portal del cliente'}; $('pageTitle').textContent=titles[view]; closeSidebar(); renderAll(); }
+  function renderAll(){ renderDashboard(); renderOrders(); renderKanban(); renderPortal(); }
 
-      <section class="view" id="view-orders">
-        <div class="card">
-          <div class="card-head"><div><h3>Pedidos y cotizaciones</h3><p>Buscá, filtrá, abrí un pedido o movelo al siguiente paso.</p></div><span class="demo-label">datos demo</span></div>
-          <div class="card-body"><div class="toolbar"><div class="toolbar-left"><input class="input search" id="searchInput" placeholder="Buscar por pedido, cliente o trabajo"/><select class="select" id="statusFilter"><option value="">Todos los estados</option></select></div><div class="toolbar-right"><button class="btn cyan" id="quickQuoteBtn">Cotizaciones pendientes</button></div></div></div>
-          <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Cliente / trabajo</th><th>Estado</th><th>Prioridad</th><th>Responsable</th><th>Entrega</th><th>Cotización</th><th></th></tr></thead><tbody id="ordersTbody"></tbody></table></div>
-        </div>
-      </section>
+  function renderDashboard(){
+    const active=orders.filter(o=>o.status!=='Finalizado').length;
+    const approval=orders.filter(o=>['Cotización enviada','Esperando aprobación'].includes(o.status)).length;
+    const prod=orders.filter(o=>['Preparación de archivo','Producción','Control de calidad','Listo para retirar / entregar'].includes(o.status)).length;
+    const done=orders.filter(o=>o.status==='Finalizado').length;
+    $('kpis').innerHTML=[['Pedidos activos',active,'Trabajo en curso'],['Esperando cliente',approval,'Cotización o aprobación'],['En producción',prod,'Preprensa a entrega'],['Finalizados',done,'Pedidos cerrados']].map((x,i)=>`<div class="kpi"><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="sub">${x[2]}</div><div class="accent"></div></div>`).join('');
+    const counts=statuses.map(s=>({s,n:orders.filter(o=>o.status===s).length})).filter(x=>x.n>0); const max=Math.max(1,...counts.map(x=>x.n));
+    $('pipeline').innerHTML=counts.map(x=>`<div class="pipe-row"><div class="pipe-label">${x.s}</div><div class="bar"><span style="width:${Math.max(10,x.n/max*100)}%"></span></div><div class="pipe-count">${x.n}</div></div>`).join('')||'<div class="empty">Sin pedidos.</div>';
+    const acts=[]; orders.forEach(o=>(o.timeline||[]).slice(0,2).forEach(t=>acts.push({...t,id:o.id,product:o.product}))); acts.sort((a,b)=>b.at.localeCompare(a.at));
+    $('activity').innerHTML=acts.slice(0,6).map(a=>`<div class="activity-item"><div class="activity-dot"></div><div><strong>${a.id} · ${escapeHtml(a.product)}</strong><p>${escapeHtml(a.text)} · ${a.at}</p></div></div>`).join('');
+  }
 
-      <section class="view" id="view-production">
-        <div class="card"><div class="card-head"><div><h3>Tablero de producción</h3><p>Vista rápida del trabajo desde aprobación hasta finalización.</p></div><span class="demo-label">datos demo</span></div><div class="card-body"><div class="kanban" id="kanban"></div></div></div>
-      </section>
+  function renderOrders(){
+    if(!$('statusFilter').dataset.ready){ $('statusFilter').innerHTML='<option value="">Todos los estados</option>'+statuses.map(s=>`<option>${s}</option>`).join(''); $('statusFilter').dataset.ready='1'; }
+    const q=($('searchInput').value||'').trim().toLowerCase(); const sf=$('statusFilter').value;
+    const filtered=orders.filter(o=>(!sf||o.status===sf)&&(!q||[o.id,o.client,o.product,o.type].join(' ').toLowerCase().includes(q)));
+    $('ordersTbody').innerHTML=filtered.map(o=>`<tr><td><strong>${o.id}</strong><br><span class="muted">${o.type}</span></td><td><strong>${escapeHtml(o.client)}</strong><br><span class="muted">${escapeHtml(o.product)}</span></td><td><span class="status ${statusClass(o.status)}">${o.status}</span></td><td><span class="priority ${priorityClass(o.priority)}">${o.priority}</span></td><td>${escapeHtml(o.owner||'Sin asignar')}</td><td>${fmtDate(o.due)}</td><td><strong>${fmtGs(o.quote)}</strong></td><td><button class="btn small" data-open-order="${o.id}">Abrir</button></td></tr>`).join('') || `<tr><td colspan="8"><div class="empty">No hay pedidos que coincidan con el filtro.</div></td></tr>`;
+  }
 
-      <section class="view" id="view-client">
-        <div class="portal-grid">
-          <div class="card portal-side"><h3>Portal del cliente</h3><p>El cliente ve solo sus pedidos, cotización, arte para aprobar y avance. En esta demo podés seleccionar cualquier pedido simulado.</p><div class="portal-list" id="portalList"></div></div>
-          <div class="card portal-main" id="portalMain"></div>
-        </div>
-      </section>
-    </div>
-  </main>
-</div>
+  function renderKanban(){
+    $('kanban').innerHTML=productionGroups.map(g=>{const list=orders.filter(o=>g.statuses.includes(o.status));return `<div class="kan-col"><div class="kan-head">${g.name}<span>${list.length}</span></div><div class="kan-cards">${list.map(o=>`<div class="job-card" data-open-order="${o.id}"><div class="id">${o.id}</div><h4>${escapeHtml(o.product)}</h4><p>${escapeHtml(o.client)} · ${fmtDate(o.due)}</p><footer><span class="status ${statusClass(o.status)}">${o.status}</span><span class="avatar">${initials(o.owner)}</span></footer></div>`).join('')||'<div class="muted" style="font-size:11px;padding:8px">Sin trabajos</div>'}</div></div>`}).join('');
+  }
 
-<div class="modal-backdrop" id="orderModal">
-  <div class="modal large">
-    <div class="modal-head"><div><h3 id="orderModalTitle">Nuevo pedido</h3><p id="orderModalSubtitle">Ingreso estructurado de una solicitud gráfica.</p></div><button class="close" data-close="orderModal">×</button></div>
-    <form id="orderForm">
-      <div class="modal-body">
-        <input type="hidden" id="editId" />
-        <div class="order-layout">
-          <div class="form-grid">
-            <div class="field"><label>Cliente / empresa</label><input class="input" id="fClient" required placeholder="Ej. Cliente corporativo" /></div>
-            <div class="field"><label>Contacto</label><input class="input" id="fContact" placeholder="Nombre o área" /></div>
-            <div class="field"><label>Email</label><input class="input" id="fEmail" type="email" placeholder="contacto@empresa.com" /></div>
-            <div class="field"><label>Teléfono</label><input class="input" id="fPhone" placeholder="098x xxx xxx" /></div>
-            <div class="field"><label>Tipo de trabajo</label><select class="select" id="fType" required><option value="">Seleccionar</option><option>Libro / revista / manual</option><option>Cartelería / señalética</option><option>Material promocional</option><option>Papelería institucional</option><option>Etiquetas / adhesivos</option><option>Trabajo gráfico especial</option></select></div>
-            <div class="field"><label>Producto / descripción</label><input class="input" id="fProduct" required placeholder="Ej. Manual institucional A4" /></div>
-            <div class="field"><label>Cantidad</label><input class="input" id="fQty" type="number" min="1" required placeholder="500" /></div>
-            <div class="field"><label>Medidas</label><input class="input" id="fSize" placeholder="Ej. A4 / 21 × 29,7 cm" /></div>
-            <div class="field"><label>Material</label><input class="input" id="fMaterial" placeholder="Ej. Couché / vinilo / papel obra" /></div>
-            <div class="field"><label>Terminación</label><input class="input" id="fFinish" placeholder="Ej. laminado, troquelado, anillado" /></div>
-            <div class="field"><label>Colores</label><select class="select" id="fColors"><option>4/0 color frente</option><option>4/4 color frente y dorso</option><option>1/0 monocromo</option><option>Especial / Pantone</option></select></div>
-            <div class="field"><label>Fecha requerida</label><input class="input" id="fDue" type="date" required /></div>
-            <div class="field"><label>Entrega</label><select class="select" id="fDelivery"><option>Retiro en local</option><option>Entrega coordinada</option><option>A definir</option></select></div>
-            <div class="field"><label>Archivo de referencia</label><input class="input" id="fFile" type="file" accept=".pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.zip" /><small>En esta demo se guarda únicamente el nombre del archivo, no se sube a un servidor.</small></div>
-            <div class="field full"><label>Observaciones</label><textarea class="textarea" id="fNotes" placeholder="Detalles técnicos, plazos, referencias, instrucciones..."></textarea></div>
-          </div>
-          <aside class="summary-box"><h4>Cómo entra el pedido</h4><div class="summary-row"><span>1. Solicitud</span><b>Cliente</b></div><div class="summary-row"><span>2. Revisión</span><b>Serigraf</b></div><div class="summary-row"><span>3. Cotización</span><b>Serigraf</b></div><div class="summary-row"><span>4. Aprobación</span><b>Cliente</b></div><div class="summary-row"><span>5. Producción</span><b>Serigraf</b></div><div class="summary-row"><span>6. Entrega</span><b>Cierre</b></div><p style="font-size:10px;color:var(--muted);line-height:1.45;margin:12px 0 0">Todos los campos son configurables en una implementación real. La demo muestra una estructura posible basada en trabajos gráficos.</p></aside>
-        </div>
-      </div>
-      <div class="modal-foot"><button type="button" class="btn" data-close="orderModal">Cancelar</button><button type="submit" class="btn primary">Guardar pedido</button></div>
-    </form>
-  </div>
-</div>
+  function renderPortal(){
+    if(!selectedId||!orders.some(o=>o.id===selectedId)) selectedId=orders[0]?.id||null;
+    $('portalList').innerHTML=orders.map(o=>`<button class="portal-item ${o.id===selectedId?'active':''}" data-select-client="${o.id}"><strong>${o.id} · ${escapeHtml(o.product)}</strong><span>${escapeHtml(o.client)} · ${o.status}</span></button>`).join('');
+    const o=orders.find(x=>x.id===selectedId); if(!o){$('portalMain').innerHTML='<div class="empty">Sin pedidos.</div>';return;}
+    const canApproveQuote=['Cotización enviada','Esperando aprobación'].includes(o.status)&&o.quote&&!o.quoteApproved;
+    const canApproveArt=['Esperando aprobación','Aprobado','Preparación de archivo'].includes(o.status)&&!o.artApproved;
+    $('portalMain').innerHTML=`<div class="portal-banner"><div style="display:flex;justify-content:space-between;gap:10px;align-items:start"><div><span class="demo-label">vista cliente · demo</span><h3 style="margin-top:8px">${escapeHtml(o.product)}</h3><p>${o.id} · ${escapeHtml(o.client)}</p></div><span class="status ${statusClass(o.status)}">${o.status}</span></div><div class="progress"><span style="width:${progressFor(o.status)}%"></span></div><div class="progress-labels"><span>Solicitud</span><span>Producción</span><span>Entrega</span></div></div>
+      <div class="detail-grid"><div class="detail-box"><div class="label">Cantidad</div><div class="value">${o.qty.toLocaleString('es-PY')}</div></div><div class="detail-box"><div class="label">Fecha requerida</div><div class="value">${fmtDate(o.due)}</div></div><div class="detail-box"><div class="label">Material</div><div class="value">${escapeHtml(o.material||'A definir')}</div></div><div class="detail-box"><div class="label">Archivo</div><div class="value">${escapeHtml(o.file||'Sin archivo')}</div></div></div>
+      <div class="action-panel"><h4>Cotización</h4><p>${o.quote?`${fmtGs(o.quote)} · ${escapeHtml(o.quoteValidity||'vigencia a definir')}`:'Serigraf todavía está preparando la cotización.'}</p><div class="action-row">${o.quoteApproved?'<span class="status s-approved">Cotización aprobada</span>':canApproveQuote?`<button class="btn primary small" data-client-action="approve-quote" data-id="${o.id}">Aprobar cotización</button><button class="btn danger small" data-client-action="request-change" data-id="${o.id}">Solicitar ajuste</button>`:'<span class="muted" style="font-size:11px">Sin acción pendiente.</span>'}</div></div>
+      <div class="action-panel"><h4>Arte / archivo</h4><p>${o.artApproved?'El arte final figura como aprobado para continuar.':'Cuando Serigraf deje el arte listo, el cliente puede aprobarlo desde este mismo espacio.'}</p><div class="action-row">${o.artApproved?'<span class="status s-approved">Arte aprobado</span>':canApproveArt?`<button class="btn primary small" data-client-action="approve-art" data-id="${o.id}">Aprobar arte</button>`:'<span class="muted" style="font-size:11px">Aún no disponible para aprobación.</span>'}</div></div>
+      <h4 style="font-size:12px;margin:18px 0 8px">Historial del pedido</h4><div class="timeline">${(o.timeline||[]).map(t=>`<div class="time-item"><div class="time-dot"></div><div><strong>${escapeHtml(t.text)}</strong><p>${t.at}</p></div></div>`).join('')}</div>`;
+  }
 
-<div class="modal-backdrop" id="detailModal">
-  <div class="modal large"><div class="modal-head"><div><h3 id="detailTitle">Detalle</h3><p id="detailSubtitle"></p></div><button class="close" data-close="detailModal">×</button></div><div class="modal-body" id="detailBody"></div><div class="modal-foot"><button class="btn" data-close="detailModal">Cerrar</button><button class="btn cyan" id="editOrderBtn">Editar datos</button><button class="btn primary" id="advanceOrderBtn">Avanzar estado</button></div></div>
-</div>
+  function openNewOrder(){ $('orderForm').reset(); $('editId').value=''; $('orderModalTitle').textContent='Nuevo pedido'; $('orderModalSubtitle').textContent='Ingreso estructurado de una solicitud gráfica.'; const d=new Date();d.setDate(d.getDate()+7);$('fDue').value=d.toISOString().slice(0,10); openModal('orderModal'); }
+  function editOrder(id){ const o=orders.find(x=>x.id===id);if(!o)return; closeModal('detailModal'); $('editId').value=o.id;$('orderModalTitle').textContent='Editar '+o.id;$('orderModalSubtitle').textContent='Actualizar especificaciones del pedido.'; $('fClient').value=o.client||'';$('fContact').value=o.contact||'';$('fEmail').value=o.email||'';$('fPhone').value=o.phone||'';$('fType').value=o.type||'';$('fProduct').value=o.product||'';$('fQty').value=o.qty||'';$('fSize').value=o.size||'';$('fMaterial').value=o.material||'';$('fFinish').value=o.finish||'';$('fColors').value=o.colors||'4/0 color frente';$('fDue').value=o.due||'';$('fDelivery').value=o.delivery||'A definir';$('fNotes').value=o.notes||'';openModal('orderModal'); }
+  function submitOrder(e){ e.preventDefault(); const existing=$('editId').value; const fileName=$('fFile').files[0]?.name; if(existing){ const o=orders.find(x=>x.id===existing); Object.assign(o,{client:$('fClient').value,contact:$('fContact').value,email:$('fEmail').value,phone:$('fPhone').value,type:$('fType').value,product:$('fProduct').value,qty:Number($('fQty').value),size:$('fSize').value,material:$('fMaterial').value,finish:$('fFinish').value,colors:$('fColors').value,due:$('fDue').value,delivery:$('fDelivery').value,notes:$('fNotes').value,file:fileName||o.file}); addTimeline(o,'Datos del pedido actualizados'); toast('Pedido actualizado'); }
+    else { const max=Math.max(1500,...orders.map(o=>Number((o.id.match(/(\d+)$/)||[])[1])||0)); const id='SG-2026-'+String(max+1).padStart(4,'0'); const o={id,client:$('fClient').value,contact:$('fContact').value,email:$('fEmail').value,phone:$('fPhone').value,type:$('fType').value,product:$('fProduct').value,qty:Number($('fQty').value),size:$('fSize').value,material:$('fMaterial').value,finish:$('fFinish').value,colors:$('fColors').value,due:$('fDue').value,delivery:$('fDelivery').value,file:fileName||'Sin archivo',notes:$('fNotes').value,status:'Nuevo',priority:'Media',owner:'Sin asignar',quote:null,quoteValidity:'',quoteNote:'',quoteApproved:false,artApproved:false,created:new Date().toISOString(),timeline:[]}; addTimeline(o,'Solicitud recibida'); orders.unshift(o); selectedId=id; toast('Pedido creado: '+id); }
+    save();closeModal('orderModal');renderAll();
+  }
+  function openDetail(id){ const o=orders.find(x=>x.id===id);if(!o)return;detailId=id;$('detailTitle').textContent=o.id+' · '+o.product;$('detailSubtitle').textContent=o.client+' · datos de demostración'; const statusOptions=statuses.map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join(''); const owners=['Sin asignar','Patrocinio','Cristino','María','Producción 1','Producción 2'].map(x=>`<option ${x===o.owner?'selected':''}>${x}</option>`).join(''); $('detailBody').innerHTML=`<div class="detail-grid"><div class="detail-box"><div class="label">Cliente</div><div class="value">${escapeHtml(o.client)}</div></div><div class="detail-box"><div class="label">Trabajo</div><div class="value">${escapeHtml(o.type)}</div></div><div class="detail-box"><div class="label">Cantidad</div><div class="value">${o.qty.toLocaleString('es-PY')}</div></div><div class="detail-box"><div class="label">Medidas</div><div class="value">${escapeHtml(o.size||'—')}</div></div><div class="detail-box"><div class="label">Material</div><div class="value">${escapeHtml(o.material||'—')}</div></div><div class="detail-box"><div class="label">Terminación</div><div class="value">${escapeHtml(o.finish||'—')}</div></div><div class="detail-box"><div class="label">Archivo</div><div class="value">${escapeHtml(o.file||'Sin archivo')}</div></div><div class="detail-box"><div class="label">Entrega requerida</div><div class="value">${fmtDate(o.due)}</div></div></div>
+      <div class="form-grid" style="margin-top:14px"><div class="field"><label>Estado</label><select class="select" id="dStatus">${statusOptions}</select></div><div class="field"><label>Responsable</label><select class="select" id="dOwner">${owners}</select></div><div class="field"><label>Prioridad</label><select class="select" id="dPriority"><option ${o.priority==='Alta'?'selected':''}>Alta</option><option ${o.priority==='Media'?'selected':''}>Media</option><option ${o.priority==='Baja'?'selected':''}>Baja</option></select></div><div class="field"><label>Cotización</label><div style="display:flex;gap:7px"><input class="input" value="${o.quote?fmtGs(o.quote):'Pendiente'}" disabled style="flex:1"/><button type="button" class="btn small" id="prepareQuoteBtn">Cotizar</button></div></div><div class="field full"><label>Nota interna / observación</label><textarea class="textarea" id="dNote" placeholder="Registrar una nota en el historial..."></textarea></div></div>
+      <div class="action-row" style="margin-top:10px"><button class="btn small" id="saveInternalBtn">Guardar cambios internos</button>${o.status==='En revisión'?'<button class="btn cyan small" id="markFileOkBtn">Archivo revisado</button>':''}</div><h4 style="font-size:12px;margin:18px 0 8px">Trazabilidad</h4><div class="timeline">${(o.timeline||[]).map(t=>`<div class="time-item"><div class="time-dot"></div><div><strong>${escapeHtml(t.text)}</strong><p>${t.at}</p></div></div>`).join('')}</div>`; openModal('detailModal'); setTimeout(()=>{$('saveInternalBtn')?.addEventListener('click',saveInternal);$('prepareQuoteBtn')?.addEventListener('click',()=>openQuote(id));$('markFileOkBtn')?.addEventListener('click',()=>{const x=orders.find(z=>z.id===id);x.status='Cotización preparada';addTimeline(x,'Archivo revisado; pedido listo para cotizar');save();closeModal('detailModal');renderAll();toast('Archivo revisado');});},0); }
+  function saveInternal(){const o=orders.find(x=>x.id===detailId);if(!o)return;const old=o.status;o.status=$('dStatus').value;o.owner=$('dOwner').value;o.priority=$('dPriority').value;const note=$('dNote').value.trim();if(old!==o.status)addTimeline(o,'Estado actualizado: '+o.status);if(note)addTimeline(o,'Nota interna: '+note);save();renderAll();openDetail(o.id);toast('Cambios guardados');}
+  function advanceCurrent(){const o=orders.find(x=>x.id===detailId);if(!o)return;const n=nextStatus(o.status);if(n===o.status){toast('El pedido ya está finalizado');return;}o.status=n;addTimeline(o,'Estado actualizado: '+n);save();closeModal('detailModal');renderAll();toast('Pedido movido a '+n);}
+  function openQuote(id){ quoteId=id; const o=orders.find(x=>x.id===id); if(!o)return; $('quoteSubtitle').textContent=id+' · '+o.product;$('qAmount').value=o.quote||'';$('qValidity').value=o.quoteValidity||'10 días';$('qNote').value=o.quoteNote||'';closeModal('detailModal');openModal('quoteModal'); }
+  function submitQuote(e){e.preventDefault();const o=orders.find(x=>x.id===quoteId);if(!o)return;o.quote=Number($('qAmount').value);o.quoteValidity=$('qValidity').value;o.quoteNote=$('qNote').value;o.status='Esperando aprobación';addTimeline(o,'Cotización preparada y enviada a aprobación del cliente');save();closeModal('quoteModal');selectedId=o.id;renderAll();toast('Cotización lista para aprobación');}
+  function clientAction(action,id){const o=orders.find(x=>x.id===id);if(!o)return;if(action==='approve-quote'){o.quoteApproved=true;o.status=o.artApproved?'Aprobado':'Esperando aprobación';addTimeline(o,'Cliente aprobó la cotización');toast('Cotización aprobada');}if(action==='request-change'){o.status='Falta información';addTimeline(o,'Cliente solicitó un ajuste a la cotización');toast('Ajuste solicitado');}if(action==='approve-art'){o.artApproved=true;if(o.quoteApproved)o.status='Aprobado';addTimeline(o,'Cliente aprobó el arte final');toast('Arte aprobado');}save();renderAll();}
+  function resetDemo(){ if(!confirm('¿Restaurar todos los datos de la demo a su estado inicial?'))return; orders=clone(baseOrders);selectedId=orders[0].id;save();renderAll();toast('Demo restaurada'); }
+  function openModal(id){$(id).classList.add('open');document.body.style.overflow='hidden'} function closeModal(id){$(id).classList.remove('open');document.body.style.overflow=''}
+  function openSidebar(){$('sidebar').classList.add('open');$('mobileOverlay').classList.add('open')} function closeSidebar(){$('sidebar').classList.remove('open');$('mobileOverlay').classList.remove('open')}
+  function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 
-<div class="modal-backdrop" id="quoteModal">
-  <div class="modal"><div class="modal-head"><div><h3>Preparar cotización</h3><p id="quoteSubtitle">Pedido</p></div><button class="close" data-close="quoteModal">×</button></div><form id="quoteForm"><div class="modal-body"><div class="form-grid"><div class="field"><label>Monto (Gs.)</label><input class="input" id="qAmount" type="number" min="0" step="1000" required /></div><div class="field"><label>Validez</label><select class="select" id="qValidity"><option>7 días</option><option>10 días</option><option>15 días</option><option>30 días</option></select></div><div class="field full"><label>Nota de cotización</label><textarea class="textarea" id="qNote" placeholder="Incluye producción según especificaciones. Plazo sujeto a aprobación final..."></textarea></div></div></div><div class="modal-foot"><button type="button" class="btn" data-close="quoteModal">Cancelar</button><button class="btn primary" type="submit">Guardar y enviar a aprobación</button></div></form></div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script src="app.js"></script>
-</body>
-</html>
+  $('nav').addEventListener('click',e=>{const b=e.target.closest('button[data-view]');if(b)switchView(b.dataset.view)});$('newOrderBtn').addEventListener('click',openNewOrder);$('orderForm').addEventListener('submit',submitOrder);$('quoteForm').addEventListener('submit',submitQuote);$('resetBtn').addEventListener('click',resetDemo);$('searchInput').addEventListener('input',renderOrders);$('statusFilter').addEventListener('change',renderOrders);$('quickQuoteBtn').addEventListener('click',()=>{$('statusFilter').value='Cotización preparada';renderOrders();});$('menuBtn').addEventListener('click',openSidebar);$('mobileOverlay').addEventListener('click',closeSidebar);$('editOrderBtn').addEventListener('click',()=>editOrder(detailId));$('advanceOrderBtn').addEventListener('click',advanceCurrent);
+  document.addEventListener('click',e=>{const close=e.target.closest('[data-close]');if(close)closeModal(close.dataset.close);const open=e.target.closest('[data-open-order]');if(open)openDetail(open.dataset.openOrder);const sel=e.target.closest('[data-select-client]');if(sel){selectedId=sel.dataset.selectClient;renderPortal()}const act=e.target.closest('[data-client-action]');if(act)clientAction(act.dataset.clientAction,act.dataset.id);});document.querySelectorAll('.modal-backdrop').forEach(x=>x.addEventListener('click',e=>{if(e.target===x)closeModal(x.id)}));document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach(x=>closeModal(x.id))});
+  renderAll();
+})();
