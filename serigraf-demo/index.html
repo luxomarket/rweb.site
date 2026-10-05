@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>Serigraf S.R.L. — Demo de gestión de pedidos</title>
+  <meta name="description" content="Demo conceptual y funcional de gestión de pedidos, cotizaciones, archivos, aprobaciones y producción para Serigraf S.R.L." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111827'/%3E%3Cpath d='M17 20h30v7H27v6h17v7H27v4h20v7H17z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brandmark">S</div><div><strong>SERIGRAF</strong><small>Gestión de producción</small></div></div>
+    <nav class="nav" id="nav">
+      <button class="active" data-view="dashboard"><span class="dot"></span>Resumen</button>
+      <button data-view="orders"><span class="dot"></span>Pedidos y cotizaciones</button>
+      <button data-view="production"><span class="dot"></span>Producción</button>
+      <button data-view="client"><span class="dot"></span>Portal del cliente</button>
+    </nav>
+    <div class="side-note"><strong>Demo conceptual funcional</strong>Los datos, clientes, responsables, importes y pedidos visibles son simulados para demostrar el flujo. No representan información operativa real de Serigraf.</div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left"><button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button><div><h1 id="pageTitle">Resumen operativo</h1><p>Pedidos · archivos · cotizaciones · aprobaciones · producción</p></div></div>
+      <div class="top-actions"><button class="btn" id="resetBtn">Restaurar demo</button><button class="btn primary" id="newOrderBtn">+ Nuevo pedido</button></div>
+    </header>
+
+    <div class="content">
+      <section class="view active" id="view-dashboard">
+        <div class="hero">
+          <div class="eyebrow">SERIGRAF S.R.L. · DEMO DE SISTEMA</div>
+          <h2>Un solo flujo para recibir el trabajo, cotizarlo, aprobarlo y llevarlo hasta producción.</h2>
+          <p>La propuesta centraliza solicitudes, especificaciones, archivos, presupuesto, aprobación del cliente, responsables y estado de producción sin depender de conversaciones dispersas.</p>
+          <div class="hero-meta"><span class="chip">Impresión y trabajos gráficos</span><span class="chip">Aprobaciones trazables</span><span class="chip">Vista cliente + vista interna</span><span class="chip">Persistencia local de la demo</span></div>
+        </div>
+        <div class="kpis" id="kpis"></div>
+        <div class="grid-2">
+          <div class="card"><div class="card-head"><div><h3>Pipeline de trabajos</h3><p>Distribución actual de los pedidos de demostración.</p></div><span class="demo-label">datos demo</span></div><div class="card-body"><div class="pipeline" id="pipeline"></div></div></div>
+          <div class="card"><div class="card-head"><div><h3>Actividad reciente</h3><p>Últimos movimientos registrados.</p></div></div><div class="card-body"><div class="activity" id="activity"></div></div></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-orders">
+        <div class="card">
+          <div class="card-head"><div><h3>Pedidos y cotizaciones</h3><p>Buscá, filtrá, abrí un pedido o movelo al siguiente paso.</p></div><span class="demo-label">datos demo</span></div>
+          <div class="card-body"><div class="toolbar"><div class="toolbar-left"><input class="input search" id="searchInput" placeholder="Buscar por pedido, cliente o trabajo"/><select class="select" id="statusFilter"><option value="">Todos los estados</option></select></div><div class="toolbar-right"><button class="btn cyan" id="quickQuoteBtn">Cotizaciones pendientes</button></div></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Cliente / trabajo</th><th>Estado</th><th>Prioridad</th><th>Responsable</th><th>Entrega</th><th>Cotización</th><th></th></tr></thead><tbody id="ordersTbody"></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-production">
+        <div class="card"><div class="card-head"><div><h3>Tablero de producción</h3><p>Vista rápida del trabajo desde aprobación hasta finalización.</p></div><span class="demo-label">datos demo</span></div><div class="card-body"><div class="kanban" id="kanban"></div></div></div>
+      </section>
+
+      <section class="view" id="view-client">
+        <div class="portal-grid">
+          <div class="card portal-side"><h3>Portal del cliente</h3><p>El cliente ve solo sus pedidos, cotización, arte para aprobar y avance. En esta demo podés seleccionar cualquier pedido simulado.</p><div class="portal-list" id="portalList"></div></div>
+          <div class="card portal-main" id="portalMain"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="orderModal">
+  <div class="modal large">
+    <div class="modal-head"><div><h3 id="orderModalTitle">Nuevo pedido</h3><p id="orderModalSubtitle">Ingreso estructurado de una solicitud gráfica.</p></div><button class="close" data-close="orderModal">×</button></div>
+    <form id="orderForm">
+      <div class="modal-body">
+        <input type="hidden" id="editId" />
+        <div class="order-layout">
+          <div class="form-grid">
+            <div class="field"><label>Cliente / empresa</label><input class="input" id="fClient" required placeholder="Ej. Cliente corporativo" /></div>
+            <div class="field"><label>Contacto</label><input class="input" id="fContact" placeholder="Nombre o área" /></div>
+            <div class="field"><label>Email</label><input class="input" id="fEmail" type="email" placeholder="contacto@empresa.com" /></div>
+            <div class="field"><label>Teléfono</label><input class="input" id="fPhone" placeholder="098x xxx xxx" /></div>
+            <div class="field"><label>Tipo de trabajo</label><select class="select" id="fType" required><option value="">Seleccionar</option><option>Libro / revista / manual</option><option>Cartelería / señalética</option><option>Material promocional</option><option>Papelería institucional</option><option>Etiquetas / adhesivos</option><option>Trabajo gráfico especial</option></select></div>
+            <div class="field"><label>Producto / descripción</label><input class="input" id="fProduct" required placeholder="Ej. Manual institucional A4" /></div>
+            <div class="field"><label>Cantidad</label><input class="input" id="fQty" type="number" min="1" required placeholder="500" /></div>
+            <div class="field"><label>Medidas</label><input class="input" id="fSize" placeholder="Ej. A4 / 21 × 29,7 cm" /></div>
+            <div class="field"><label>Material</label><input class="input" id="fMaterial" placeholder="Ej. Couché / vinilo / papel obra" /></div>
+            <div class="field"><label>Terminación</label><input class="input" id="fFinish" placeholder="Ej. laminado, troquelado, anillado" /></div>
+            <div class="field"><label>Colores</label><select class="select" id="fColors"><option>4/0 color frente</option><option>4/4 color frente y dorso</option><option>1/0 monocromo</option><option>Especial / Pantone</option></select></div>
+            <div class="field"><label>Fecha requerida</label><input class="input" id="fDue" type="date" required /></div>
+            <div class="field"><label>Entrega</label><select class="select" id="fDelivery"><option>Retiro en local</option><option>Entrega coordinada</option><option>A definir</option></select></div>
+            <div class="field"><label>Archivo de referencia</label><input class="input" id="fFile" type="file" accept=".pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.zip" /><small>En esta demo se guarda únicamente el nombre del archivo, no se sube a un servidor.</small></div>
+            <div class="field full"><label>Observaciones</label><textarea class="textarea" id="fNotes" placeholder="Detalles técnicos, plazos, referencias, instrucciones..."></textarea></div>
+          </div>
+          <aside class="summary-box"><h4>Cómo entra el pedido</h4><div class="summary-row"><span>1. Solicitud</span><b>Cliente</b></div><div class="summary-row"><span>2. Revisión</span><b>Serigraf</b></div><div class="summary-row"><span>3. Cotización</span><b>Serigraf</b></div><div class="summary-row"><span>4. Aprobación</span><b>Cliente</b></div><div class="summary-row"><span>5. Producción</span><b>Serigraf</b></div><div class="summary-row"><span>6. Entrega</span><b>Cierre</b></div><p style="font-size:10px;color:var(--muted);line-height:1.45;margin:12px 0 0">Todos los campos son configurables en una implementación real. La demo muestra una estructura posible basada en trabajos gráficos.</p></aside>
+        </div>
+      </div>
+      <div class="modal-foot"><button type="button" class="btn" data-close="orderModal">Cancelar</button><button type="submit" class="btn primary">Guardar pedido</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="detailModal">
+  <div class="modal large"><div class="modal-head"><div><h3 id="detailTitle">Detalle</h3><p id="detailSubtitle"></p></div><button class="close" data-close="detailModal">×</button></div><div class="modal-body" id="detailBody"></div><div class="modal-foot"><button class="btn" data-close="detailModal">Cerrar</button><button class="btn cyan" id="editOrderBtn">Editar datos</button><button class="btn primary" id="advanceOrderBtn">Avanzar estado</button></div></div>
+</div>
+
+<div class="modal-backdrop" id="quoteModal">
+  <div class="modal"><div class="modal-head"><div><h3>Preparar cotización</h3><p id="quoteSubtitle">Pedido</p></div><button class="close" data-close="quoteModal">×</button></div><form id="quoteForm"><div class="modal-body"><div class="form-grid"><div class="field"><label>Monto (Gs.)</label><input class="input" id="qAmount" type="number" min="0" step="1000" required /></div><div class="field"><label>Validez</label><select class="select" id="qValidity"><option>7 días</option><option>10 días</option><option>15 días</option><option>30 días</option></select></div><div class="field full"><label>Nota de cotización</label><textarea class="textarea" id="qNote" placeholder="Incluye producción según especificaciones. Plazo sujeto a aprobación final..."></textarea></div></div></div><div class="modal-foot"><button type="button" class="btn" data-close="quoteModal">Cancelar</button><button class="btn primary" type="submit">Guardar y enviar a aprobación</button></div></form></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
