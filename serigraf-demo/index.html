@@ -1,113 +1,513 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111827" />
-  <title>Serigraf S.R.L. — Demo de gestión de pedidos</title>
-  <meta name="description" content="Demo conceptual y funcional de gestión de pedidos, cotizaciones, archivos, aprobaciones y producción para Serigraf S.R.L." />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111827'/%3E%3Cpath d='M17 20h30v7H27v6h17v7H27v4h20v7H17z' fill='%23fff'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SERIGRAF — Centro de Producción</title>
+<style>
+  :root{
+    --paper:#f1eee7;
+    --paper-2:#e7e2d8;
+    --ink:#171717;
+    --muted:#6f6a61;
+    --line:#cbc5ba;
+    --panel:#faf8f3;
+    --white:#fffefb;
+    --cyan:#00a6c8;
+    --magenta:#d2387c;
+    --yellow:#e7b91f;
+    --key:#171717;
+    --ok:#1d7c58;
+    --warn:#ad6b1b;
+    --danger:#a23c34;
+    --radius:18px;
+    --shadow:0 18px 50px rgba(28,24,18,.08);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter, ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 1px 1px, rgba(23,23,23,.035) 1px, transparent 1px) 0 0/18px 18px,
+      var(--paper);
+  }
+  button,input,select,textarea{font:inherit}
+  button{cursor:pointer}
+  .top-strip{
+    height:7px;
+    background:linear-gradient(90deg,var(--cyan) 0 25%,var(--magenta) 25% 50%,var(--yellow) 50% 75%,var(--key) 75% 100%);
+  }
+  .shell{max-width:1540px;margin:0 auto;padding:20px 22px 30px}
+  .header{
+    display:grid;
+    grid-template-columns:260px 1fr auto;
+    align-items:center;
+    gap:22px;
+    padding:10px 0 22px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:13px;
+  }
+  .brand-mark{
+    width:48px;height:48px;border:2px solid var(--ink);border-radius:14px;
+    display:grid;place-items:center;font-weight:950;font-size:23px;letter-spacing:-2px;
+    background:var(--white);box-shadow:5px 5px 0 var(--ink);
+  }
+  .brand-name{font-size:19px;font-weight:900;letter-spacing:.05em}
+  .brand-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;margin-top:2px}
+  .header-center{
+    text-align:center;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11px;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:var(--muted);
+  }
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 5px rgba(29,124,88,.10)}
+  .date-line{font-size:15px;font-weight:800;margin-top:6px}
+  .header-actions{display:flex;gap:10px;justify-content:flex-end}
+  .btn{
+    border:1px solid var(--ink);background:var(--white);color:var(--ink);
+    padding:11px 14px;border-radius:12px;font-weight:850;display:inline-flex;align-items:center;gap:8px;
+    box-shadow:3px 3px 0 rgba(23,23,23,.12);
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn.primary{background:var(--ink);color:white}
+  .btn.ghost{border-color:var(--line);box-shadow:none}
+  .hero{
+    position:relative;overflow:hidden;
+    display:grid;grid-template-columns:1.35fr .65fr;gap:0;
+    background:var(--ink);color:#fff;border-radius:26px;box-shadow:var(--shadow);
+    min-height:265px;
+  }
+  .hero::after{
+    content:"";position:absolute;right:-75px;top:-75px;width:330px;height:330px;border-radius:50%;
+    border:52px solid rgba(255,255,255,.035);
+  }
+  .hero-copy{padding:34px 36px 32px;position:relative;z-index:2}
+  .hero-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:#c7c2ba;font-weight:850}
+  .hero h1{
+    font-size:clamp(34px,4.1vw,64px);line-height:.96;letter-spacing:-.055em;margin:14px 0 14px;max-width:780px
+  }
+  .hero p{max-width:760px;color:#d7d2cb;font-size:15px;line-height:1.55;margin:0}
+  .hero-stats{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:27px;max-width:650px
+  }
+  .hero-stat{border-top:1px solid rgba(255,255,255,.22);padding-top:10px}
+  .hero-stat b{font-size:23px}
+  .hero-stat span{display:block;font-size:11px;color:#aaa49c;margin-top:2px;text-transform:uppercase;letter-spacing:.1em}
+  .hero-side{
+    position:relative;z-index:2;
+    padding:30px;border-left:1px solid rgba(255,255,255,.12);
+    display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.01))
+  }
+  .hero-side-title{font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.13em;color:#d7d2cb}
+  .deadline{margin-top:18px;display:grid;gap:10px}
+  .deadline-card{
+    background:#252525;border:1px solid #3a3a3a;border-radius:14px;padding:13px 14px;
+    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px
+  }
+  .deadline-card .flag{width:6px;height:38px;border-radius:8px;background:var(--yellow)}
+  .deadline-card.danger .flag{background:#dc6e5d}
+  .deadline-card .name{font-size:13px;font-weight:850}
+  .deadline-card .meta{font-size:11px;color:#9f9a92;margin-top:2px}
+  .deadline-card .time{text-align:right;font-size:12px;font-weight:900}
+  .deadline-card .time span{display:block;color:#9f9a92;font-size:10px;margin-top:2px}
+  .production-rail{
+    margin:18px 0;
+    display:grid;grid-template-columns:repeat(5,1fr);
+    border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel);
+  }
+  .stage{padding:17px 18px;border-right:1px solid var(--line);position:relative;min-height:88px}
+  .stage:last-child{border-right:0}
+  .stage-num{font-size:10px;color:var(--muted);font-weight:900;letter-spacing:.12em}
+  .stage strong{display:block;font-size:14px;margin-top:4px}
+  .stage small{display:block;color:var(--muted);margin-top:5px}
+  .stage .count{position:absolute;right:14px;top:15px;font-size:24px;font-weight:950}
+  .stage.hot{background:#fff8df}
+  .stage.hot::after{content:"CUELLO DE BOTELLA";position:absolute;left:18px;bottom:11px;font-size:9px;letter-spacing:.11em;font-weight:950;color:var(--warn)}
+  .layout{
+    display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.62fr);gap:18px;align-items:start
+  }
+  .section{
+    background:rgba(250,248,243,.88);backdrop-filter:blur(8px);
+    border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 28px rgba(35,31,24,.045)
+  }
+  .section-head{
+    padding:18px 20px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;border-bottom:1px solid var(--line)
+  }
+  .section-title{font-size:18px;font-weight:950;letter-spacing:-.02em}
+  .section-sub{font-size:12px;color:var(--muted);margin-top:4px}
+  .segmented{display:flex;gap:4px;background:var(--paper-2);padding:4px;border-radius:10px}
+  .segmented button{border:0;background:transparent;padding:7px 9px;border-radius:8px;font-size:11px;font-weight:850;color:var(--muted)}
+  .segmented button.active{background:var(--white);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .job-list{padding:10px}
+  .job{
+    position:relative;
+    display:grid;grid-template-columns:76px minmax(0,1.2fr) minmax(170px,.72fr) minmax(120px,.52fr) auto;
+    align-items:center;gap:14px;
+    padding:14px 12px;border-radius:14px;border:1px solid transparent;
+  }
+  .job:hover{background:var(--white);border-color:var(--line)}
+  .job + .job{border-top-color:#dfd9cf}
+  .job:hover + .job{border-top-color:transparent}
+  .ticket{
+    width:65px;height:65px;border-radius:12px;background:white;border:1px solid var(--line);
+    position:relative;display:grid;place-items:center;overflow:hidden
+  }
+  .ticket::before,.ticket::after{content:"";position:absolute}
+  .ticket::before{inset:8px;border:2px solid var(--ink);border-radius:4px}
+  .ticket::after{width:24px;height:24px;border-radius:50%;background:var(--magenta);right:7px;bottom:7px;mix-blend-mode:multiply;opacity:.85}
+  .ticket.cyan::after{background:var(--cyan)}
+  .ticket.yellow::after{background:var(--yellow)}
+  .ticket.stack::before{border:0;border-radius:3px;background:linear-gradient(#fff 0 25%,var(--ink) 26% 29%,#fff 30% 55%,var(--ink) 56% 59%,#fff 60%)}
+  .job-code{font-size:10px;color:var(--muted);font-weight:900;letter-spacing:.1em}
+  .job-name{font-size:14px;font-weight:900;margin-top:4px}
+  .job-client{font-size:12px;color:var(--muted);margin-top:3px}
+  .spec{font-size:12px;line-height:1.45}
+  .spec b{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:3px}
+  .progress{min-width:118px}
+  .progress b{display:block;font-size:12px;margin-bottom:8px}
+  .bar{height:7px;background:var(--paper-2);border-radius:20px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--ink);border-radius:20px}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;padding:7px 9px;border-radius:999px;white-space:nowrap}
+  .pill.warn{background:#fff0d8;color:#88500f}
+  .pill.ok{background:#dff2e9;color:#155b41}
+  .pill.info{background:#dff3f8;color:#09667a}
+  .pill.gray{background:#e8e4dc;color:#5e5951}
+  .job-actions button{border:1px solid var(--line);background:var(--white);border-radius:9px;padding:8px 10px;font-weight:900}
+  .aside{display:grid;gap:18px}
+  .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+  .metric{
+    min-height:125px;background:var(--white);border:1px solid var(--line);border-radius:15px;padding:15px;
+    display:flex;flex-direction:column;justify-content:space-between
+  }
+  .metric .label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:900}
+  .metric .num{font-size:34px;font-weight:950;letter-spacing:-.04em}
+  .metric .foot{font-size:11px;color:var(--muted)}
+  .metric.ink{background:var(--ink);color:white;border-color:var(--ink)}
+  .metric.ink .label,.metric.ink .foot{color:#bfb9b1}
+  .attention{padding:14px}
+  .attention-item{padding:12px 10px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:start}
+  .attention-item:last-child{border-bottom:0}
+  .attention-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;background:var(--danger)}
+  .attention-dot.warn{background:var(--yellow)}
+  .attention-dot.ok{background:var(--ok)}
+  .attention-title{font-size:12px;font-weight:900}
+  .attention-meta{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .attention-time{font-size:10px;color:var(--muted);font-weight:850}
+  .paper-board{
+    margin-top:18px;padding:18px 18px 20px;
+    background:#d9d2c5;border:1px solid #c7bfb2;border-radius:20px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)
+  }
+  .board-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .board-head h2{font-size:17px;margin:0}
+  .board-head p{font-size:11px;color:var(--muted);margin:4px 0 0}
+  .columns{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .column{background:rgba(255,255,255,.38);border:1px dashed #aaa193;border-radius:14px;padding:10px;min-height:230px}
+  .column-title{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.09em;padding:4px 4px 10px}
+  .column-title span{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.6);display:grid;place-items:center}
+  .work-card{
+    background:#fffdf7;border:1px solid #c8c0b3;border-radius:10px;padding:12px;margin-bottom:9px;box-shadow:0 5px 14px rgba(36,30,20,.07);
+    position:relative;
+  }
+  .work-card::before{content:"";position:absolute;width:34px;height:10px;background:rgba(232,220,188,.7);top:-5px;left:50%;transform:translateX(-50%) rotate(-1deg)}
+  .work-card strong{display:block;font-size:12px;line-height:1.3}
+  .work-card small{display:block;color:var(--muted);font-size:10px;margin-top:5px}
+  .work-card .swatches{display:flex;gap:3px;margin-top:9px}
+  .swatches i{width:10px;height:10px;border-radius:50%;display:block}
+  .swatches .c{background:var(--cyan)} .swatches .m{background:var(--magenta)} .swatches .y{background:var(--yellow)} .swatches .k{background:var(--key)}
+  .footer-note{font-size:10px;color:var(--muted);text-align:center;padding:22px 0 4px}
+  .modal-backdrop{
+    display:none;position:fixed;inset:0;background:rgba(15,14,13,.62);backdrop-filter:blur(6px);z-index:20;padding:20px;overflow:auto
+  }
+  .modal-backdrop.show{display:grid;place-items:center}
+  .modal{width:min(760px,100%);background:var(--panel);border-radius:22px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.28)}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}
+  .modal-head strong{font-size:18px}
+  .close{border:0;background:transparent;font-size:22px}
+  .form{padding:18px 20px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  label{font-size:11px;font-weight:850;color:var(--muted)}
+  input,select,textarea{width:100%;margin-top:6px;border:1px solid var(--line);background:var(--white);border-radius:10px;padding:11px;color:var(--ink);outline:none}
+  textarea{min-height:92px;resize:vertical}
+  .full{grid-column:1/-1}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;padding:0 20px 20px}
+  @media(max-width:1100px){
+    .header{grid-template-columns:1fr auto}.header-center{display:none}
+    .hero{grid-template-columns:1fr}.hero-side{border-left:0;border-top:1px solid rgba(255,255,255,.12)}
+    .layout{grid-template-columns:1fr}
+    .aside{grid-template-columns:1fr 1fr}
+    .job{grid-template-columns:70px 1fr 1fr auto}.progress{display:none}
+  }
+  @media(max-width:760px){
+    .shell{padding:14px 12px 24px}
+    .header{grid-template-columns:1fr}.header-actions{justify-content:flex-start}.btn.ghost{display:none}
+    .hero-copy{padding:28px 22px}.hero-side{padding:22px}.hero-stats{grid-template-columns:1fr 1fr}
+    .production-rail{grid-template-columns:1fr 1fr;overflow:visible}.stage{border-bottom:1px solid var(--line)}.stage:nth-child(2n){border-right:0}.stage:last-child{grid-column:1/-1}
+    .aside{grid-template-columns:1fr}
+    .job{grid-template-columns:58px 1fr auto;gap:10px}.job .spec{display:none}.ticket{width:52px;height:52px}.job-actions{grid-column:2/-1}.job-actions button{width:100%}
+    .columns{grid-template-columns:1fr}
+    .form{grid-template-columns:1fr}.full{grid-column:auto}
+  }
+</style>
 </head>
 <body>
-<div class="mobile-overlay" id="mobileOverlay"></div>
-<div class="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand"><div class="brandmark">S</div><div><strong>SERIGRAF</strong><small>Gestión de producción</small></div></div>
-    <nav class="nav" id="nav">
-      <button class="active" data-view="dashboard"><span class="dot"></span>Resumen</button>
-      <button data-view="orders"><span class="dot"></span>Pedidos y cotizaciones</button>
-      <button data-view="production"><span class="dot"></span>Producción</button>
-      <button data-view="client"><span class="dot"></span>Portal del cliente</button>
-    </nav>
-    <div class="side-note"><strong>Demo conceptual funcional</strong>Los datos, clientes, responsables, importes y pedidos visibles son simulados para demostrar el flujo. No representan información operativa real de Serigraf.</div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <div class="top-left"><button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button><div><h1 id="pageTitle">Resumen operativo</h1><p>Pedidos · archivos · cotizaciones · aprobaciones · producción</p></div></div>
-      <div class="top-actions"><button class="btn" id="resetBtn">Restaurar demo</button><button class="btn primary" id="newOrderBtn">+ Nuevo pedido</button></div>
-    </header>
-
-    <div class="content">
-      <section class="view active" id="view-dashboard">
-        <div class="hero">
-          <div class="eyebrow">SERIGRAF S.R.L. · DEMO DE SISTEMA</div>
-          <h2>Un solo flujo para recibir el trabajo, cotizarlo, aprobarlo y llevarlo hasta producción.</h2>
-          <p>La propuesta centraliza solicitudes, especificaciones, archivos, presupuesto, aprobación del cliente, responsables y estado de producción sin depender de conversaciones dispersas.</p>
-          <div class="hero-meta"><span class="chip">Impresión y trabajos gráficos</span><span class="chip">Aprobaciones trazables</span><span class="chip">Vista cliente + vista interna</span><span class="chip">Persistencia local de la demo</span></div>
-        </div>
-        <div class="kpis" id="kpis"></div>
-        <div class="grid-2">
-          <div class="card"><div class="card-head"><div><h3>Pipeline de trabajos</h3><p>Distribución actual de los pedidos de demostración.</p></div><span class="demo-label">datos demo</span></div><div class="card-body"><div class="pipeline" id="pipeline"></div></div></div>
-          <div class="card"><div class="card-head"><div><h3>Actividad reciente</h3><p>Últimos movimientos registrados.</p></div></div><div class="card-body"><div class="activity" id="activity"></div></div></div>
-        </div>
-      </section>
-
-      <section class="view" id="view-orders">
-        <div class="card">
-          <div class="card-head"><div><h3>Pedidos y cotizaciones</h3><p>Buscá, filtrá, abrí un pedido o movelo al siguiente paso.</p></div><span class="demo-label">datos demo</span></div>
-          <div class="card-body"><div class="toolbar"><div class="toolbar-left"><input class="input search" id="searchInput" placeholder="Buscar por pedido, cliente o trabajo"/><select class="select" id="statusFilter"><option value="">Todos los estados</option></select></div><div class="toolbar-right"><button class="btn cyan" id="quickQuoteBtn">Cotizaciones pendientes</button></div></div></div>
-          <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Cliente / trabajo</th><th>Estado</th><th>Prioridad</th><th>Responsable</th><th>Entrega</th><th>Cotización</th><th></th></tr></thead><tbody id="ordersTbody"></tbody></table></div>
-        </div>
-      </section>
-
-      <section class="view" id="view-production">
-        <div class="card"><div class="card-head"><div><h3>Tablero de producción</h3><p>Vista rápida del trabajo desde aprobación hasta finalización.</p></div><span class="demo-label">datos demo</span></div><div class="card-body"><div class="kanban" id="kanban"></div></div></div>
-      </section>
-
-      <section class="view" id="view-client">
-        <div class="portal-grid">
-          <div class="card portal-side"><h3>Portal del cliente</h3><p>El cliente ve solo sus pedidos, cotización, arte para aprobar y avance. En esta demo podés seleccionar cualquier pedido simulado.</p><div class="portal-list" id="portalList"></div></div>
-          <div class="card portal-main" id="portalMain"></div>
-        </div>
-      </section>
+<div class="top-strip"></div>
+<div class="shell">
+  <header class="header">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div>
+        <div class="brand-name">SERIGRAF</div>
+        <div class="brand-sub">Centro de producción</div>
+      </div>
     </div>
-  </main>
-</div>
+    <div class="header-center">
+      <div class="eyebrow"><span class="live-dot"></span> Planta operativa</div>
+      <div class="date-line" id="todayLabel">Lunes · 05 octubre 2026</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn ghost" id="resetBtn">↺ Restaurar</button>
+      <button class="btn primary" id="newJobBtn">＋ Nueva orden</button>
+    </div>
+  </header>
 
-<div class="modal-backdrop" id="orderModal">
-  <div class="modal large">
-    <div class="modal-head"><div><h3 id="orderModalTitle">Nuevo pedido</h3><p id="orderModalSubtitle">Ingreso estructurado de una solicitud gráfica.</p></div><button class="close" data-close="orderModal">×</button></div>
-    <form id="orderForm">
-      <div class="modal-body">
-        <input type="hidden" id="editId" />
-        <div class="order-layout">
-          <div class="form-grid">
-            <div class="field"><label>Cliente / empresa</label><input class="input" id="fClient" required placeholder="Ej. Cliente corporativo" /></div>
-            <div class="field"><label>Contacto</label><input class="input" id="fContact" placeholder="Nombre o área" /></div>
-            <div class="field"><label>Email</label><input class="input" id="fEmail" type="email" placeholder="contacto@empresa.com" /></div>
-            <div class="field"><label>Teléfono</label><input class="input" id="fPhone" placeholder="098x xxx xxx" /></div>
-            <div class="field"><label>Tipo de trabajo</label><select class="select" id="fType" required><option value="">Seleccionar</option><option>Libro / revista / manual</option><option>Cartelería / señalética</option><option>Material promocional</option><option>Papelería institucional</option><option>Etiquetas / adhesivos</option><option>Trabajo gráfico especial</option></select></div>
-            <div class="field"><label>Producto / descripción</label><input class="input" id="fProduct" required placeholder="Ej. Manual institucional A4" /></div>
-            <div class="field"><label>Cantidad</label><input class="input" id="fQty" type="number" min="1" required placeholder="500" /></div>
-            <div class="field"><label>Medidas</label><input class="input" id="fSize" placeholder="Ej. A4 / 21 × 29,7 cm" /></div>
-            <div class="field"><label>Material</label><input class="input" id="fMaterial" placeholder="Ej. Couché / vinilo / papel obra" /></div>
-            <div class="field"><label>Terminación</label><input class="input" id="fFinish" placeholder="Ej. laminado, troquelado, anillado" /></div>
-            <div class="field"><label>Colores</label><select class="select" id="fColors"><option>4/0 color frente</option><option>4/4 color frente y dorso</option><option>1/0 monocromo</option><option>Especial / Pantone</option></select></div>
-            <div class="field"><label>Fecha requerida</label><input class="input" id="fDue" type="date" required /></div>
-            <div class="field"><label>Entrega</label><select class="select" id="fDelivery"><option>Retiro en local</option><option>Entrega coordinada</option><option>A definir</option></select></div>
-            <div class="field"><label>Archivo de referencia</label><input class="input" id="fFile" type="file" accept=".pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.zip" /><small>En esta demo se guarda únicamente el nombre del archivo, no se sube a un servidor.</small></div>
-            <div class="field full"><label>Observaciones</label><textarea class="textarea" id="fNotes" placeholder="Detalles técnicos, plazos, referencias, instrucciones..."></textarea></div>
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="hero-kicker">Control diario · pedidos · arte · impresión · terminación</div>
+      <h1>Lo que entra hoy debe salir bajo control.</h1>
+      <p>Una vista hecha para una imprenta: qué trabajo llegó, qué falta aprobar, qué está en máquina, qué se termina hoy y qué pedido corre riesgo de atrasarse.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>14</b><span>órdenes activas</span></div>
+        <div class="hero-stat"><b>₲ 38,7 M</b><span>valor en producción</span></div>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div>
+        <div class="hero-side-title">Entregas que mandan hoy</div>
+        <div class="deadline">
+          <div class="deadline-card danger">
+            <span class="flag"></span>
+            <div><div class="name">Revista institucional · 2.000 u.</div><div class="meta">Terminación + empaquetado</div></div>
+            <div class="time">15:30<span>hoy</span></div>
           </div>
-          <aside class="summary-box"><h4>Cómo entra el pedido</h4><div class="summary-row"><span>1. Solicitud</span><b>Cliente</b></div><div class="summary-row"><span>2. Revisión</span><b>Serigraf</b></div><div class="summary-row"><span>3. Cotización</span><b>Serigraf</b></div><div class="summary-row"><span>4. Aprobación</span><b>Cliente</b></div><div class="summary-row"><span>5. Producción</span><b>Serigraf</b></div><div class="summary-row"><span>6. Entrega</span><b>Cierre</b></div><p style="font-size:10px;color:var(--muted);line-height:1.45;margin:12px 0 0">Todos los campos son configurables en una implementación real. La demo muestra una estructura posible basada en trabajos gráficos.</p></aside>
+          <div class="deadline-card">
+            <span class="flag"></span>
+            <div><div class="name">Afiches A2 · 750 u.</div><div class="meta">Offset 4/0 · corte final</div></div>
+            <div class="time">11:00<span>mañana</span></div>
+          </div>
         </div>
       </div>
-      <div class="modal-foot"><button type="button" class="btn" data-close="orderModal">Cancelar</button><button type="submit" class="btn primary">Guardar pedido</button></div>
-    </form>
+      <div class="hero-side-title">Prioridad visible antes que reportes bonitos.</div>
+    </div>
+  </section>
+
+  <section class="production-rail" aria-label="Flujo de producción">
+    <div class="stage"><span class="stage-num">01</span><strong>Ingreso</strong><small>Solicitud + archivos</small><span class="count">3</span></div>
+    <div class="stage hot"><span class="stage-num">02</span><strong>Preprensa</strong><small>Arte + aprobación</small><span class="count">5</span></div>
+    <div class="stage"><span class="stage-num">03</span><strong>Impresión</strong><small>Offset / digital</small><span class="count">2</span></div>
+    <div class="stage"><span class="stage-num">04</span><strong>Terminación</strong><small>Corte + encuadernación</small><span class="count">3</span></div>
+    <div class="stage"><span class="stage-num">05</span><strong>Despacho</strong><small>Entrega + cierre</small><span class="count">1</span></div>
+  </section>
+
+  <div class="layout">
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <div class="section-title">En planta ahora</div>
+          <div class="section-sub">Órdenes activas ordenadas por riesgo y fecha prometida.</div>
+        </div>
+        <div class="segmented">
+          <button class="active" data-filter="all">Todas</button>
+          <button data-filter="risk">Con riesgo</button>
+          <button data-filter="today">Hoy</button>
+        </div>
+      </div>
+      <div class="job-list" id="jobList">
+        <article class="job" data-kind="risk today">
+          <div class="ticket yellow stack"></div>
+          <div>
+            <div class="job-code">OP-2648 · PRIORIDAD ALTA</div>
+            <div class="job-name">Revista institucional · 64 páginas</div>
+            <div class="job-client">Universidad / Comunicación</div>
+          </div>
+          <div class="spec"><b>Producción</b>2.000 u. · Couché · 4/4<br>Lomo cuadrado + laminado</div>
+          <div class="progress"><b>Terminación 78%</b><div class="bar"><i style="width:78%"></i></div></div>
+          <div class="job-actions"><span class="pill warn">Riesgo 2 h</span><br><button class="advanceBtn" data-name="Revista institucional">Avanzar →</button></div>
+        </article>
+
+        <article class="job" data-kind="today">
+          <div class="ticket cyan"></div>
+          <div>
+            <div class="job-code">OP-2651 · NORMAL</div>
+            <div class="job-name">Afiches A2 · campaña institucional</div>
+            <div class="job-client">Cliente corporativo</div>
+          </div>
+          <div class="spec"><b>Producción</b>750 u. · Ilustración 150 g<br>Offset 4/0 · corte</div>
+          <div class="progress"><b>Impresión 52%</b><div class="bar"><i style="width:52%"></i></div></div>
+          <div class="job-actions"><span class="pill info">En máquina</span><br><button class="advanceBtn" data-name="Afiches A2">Avanzar →</button></div>
+        </article>
+
+        <article class="job" data-kind="risk">
+          <div class="ticket"></div>
+          <div>
+            <div class="job-code">OP-2655 · ESPERA CLIENTE</div>
+            <div class="job-name">Tarjetas personales · 8 nombres</div>
+            <div class="job-client">Estudio jurídico</div>
+          </div>
+          <div class="spec"><b>Bloqueo</b>Arte enviado 09:14<br>Falta aprobación final</div>
+          <div class="progress"><b>Preprensa 36%</b><div class="bar"><i style="width:36%"></i></div></div>
+          <div class="job-actions"><span class="pill warn">Aprobación</span><br><button class="advanceBtn" data-name="Tarjetas personales">Reenviar ↗</button></div>
+        </article>
+
+        <article class="job" data-kind="all">
+          <div class="ticket cyan stack"></div>
+          <div>
+            <div class="job-code">OP-2641 · NORMAL</div>
+            <div class="job-name">Formularios continuos · 3 vías</div>
+            <div class="job-client">Distribuidora nacional</div>
+          </div>
+          <div class="spec"><b>Producción</b>10.000 juegos<br>Numerado · perforado</div>
+          <div class="progress"><b>Impresión 64%</b><div class="bar"><i style="width:64%"></i></div></div>
+          <div class="job-actions"><span class="pill ok">En tiempo</span><br><button class="advanceBtn" data-name="Formularios continuos">Detalle →</button></div>
+        </article>
+      </div>
+    </section>
+
+    <aside class="aside">
+      <section class="section">
+        <div class="section-head"><div><div class="section-title">Pulso del día</div><div class="section-sub">Sin adornos: lo que importa ahora.</div></div></div>
+        <div class="metric-grid">
+          <div class="metric ink"><span class="label">Entrega hoy</span><div class="num">4</div><div class="foot">1 con riesgo</div></div>
+          <div class="metric"><span class="label">Esperando arte</span><div class="num">5</div><div class="foot">promedio 3 h 18 m</div></div>
+          <div class="metric"><span class="label">En máquina</span><div class="num">2</div><div class="foot">offset + digital</div></div>
+          <div class="metric"><span class="label">Listos despacho</span><div class="num">3</div><div class="foot">antes de 17:00</div></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><div class="section-title">Necesita decisión</div><div class="section-sub">Bloqueos que frenan producción.</div></div></div>
+        <div class="attention">
+          <div class="attention-item">
+            <i class="attention-dot"></i>
+            <div><div class="attention-title">Revista OP-2648</div><div class="attention-meta">Encuadernación consume 42 min más que lo previsto.</div></div>
+            <div class="attention-time">10:27</div>
+          </div>
+          <div class="attention-item">
+            <i class="attention-dot warn"></i>
+            <div><div class="attention-title">Tarjetas OP-2655</div><div class="attention-meta">Cliente todavía no aprobó el arte final.</div></div>
+            <div class="attention-time">09:14</div>
+          </div>
+          <div class="attention-item">
+            <i class="attention-dot ok"></i>
+            <div><div class="attention-title">Formularios OP-2641</div><div class="attention-meta">Primera tanda validada, continúa tiraje.</div></div>
+            <div class="attention-time">08:42</div>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="paper-board">
+    <div class="board-head">
+      <div><h2>Mesa de producción</h2><p>Una lectura visual de lo que se mueve entre áreas.</p></div>
+      <span class="pill gray">Actualizado 10:43</span>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <div class="column-title">Preprensa <span>5</span></div>
+        <div class="work-card"><strong>Catálogo comercial · 48 pág.</strong><small>Falta corregir portada · OP-2659</small><div class="swatches"><i class="c"></i><i class="m"></i><i class="y"></i><i class="k"></i></div></div>
+        <div class="work-card"><strong>Tarjetas · 8 nombres</strong><small>Esperando aprobación · OP-2655</small><div class="swatches"><i class="k"></i></div></div>
+      </div>
+      <div class="column">
+        <div class="column-title">Impresión <span>2</span></div>
+        <div class="work-card"><strong>Afiches A2 · 750 u.</strong><small>Offset · 52% · OP-2651</small><div class="swatches"><i class="c"></i><i class="m"></i><i class="y"></i><i class="k"></i></div></div>
+        <div class="work-card"><strong>Formularios · 10.000</strong><small>64% del tiraje · OP-2641</small><div class="swatches"><i class="c"></i><i class="k"></i></div></div>
+      </div>
+      <div class="column">
+        <div class="column-title">Terminación <span>3</span></div>
+        <div class="work-card"><strong>Revista institucional</strong><small>Laminado + lomo · OP-2648</small><div class="swatches"><i class="c"></i><i class="m"></i><i class="y"></i><i class="k"></i></div></div>
+        <div class="work-card"><strong>Libros internos · 300 u.</strong><small>Encuadernación · OP-2637</small><div class="swatches"><i class="k"></i></div></div>
+      </div>
+      <div class="column">
+        <div class="column-title">Despacho <span>3</span></div>
+        <div class="work-card"><strong>Volantes A5 · 5.000 u.</strong><small>Listo para retirar · OP-2639</small><div class="swatches"><i class="m"></i><i class="y"></i></div></div>
+        <div class="work-card"><strong>Carpetas corporativas</strong><small>Entrega confirmada 14:00 · OP-2634</small><div class="swatches"><i class="c"></i><i class="k"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">Concepto visual funcional · datos simulados únicamente para presentación comercial.</div>
+</div>
+
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-head"><strong>Nueva orden de producción</strong><button class="close" id="closeModal">×</button></div>
+    <div class="form">
+      <label>Cliente<input id="client" placeholder="Empresa / institución"></label>
+      <label>Trabajo<select id="type"><option>Libro / revista</option><option>Afiches / volantes</option><option>Tarjetas</option><option>Formularios continuos</option><option>Otro</option></select></label>
+      <label>Cantidad<input id="qty" type="number" value="500"></label>
+      <label>Fecha prometida<input type="date" value="2026-10-08"></label>
+      <label>Material<input placeholder="Ej. Couché 150 g"></label>
+      <label>Proceso<select><option>Offset 4 colores</option><option>Digital</option><option>Preprensa</option><option>Terminación</option></select></label>
+      <label class="full">Observaciones<textarea placeholder="Terminación, corte, numeración, encuadernación, referencia del arte…"></textarea></label>
+    </div>
+    <div class="modal-actions"><button class="btn ghost" id="cancelModal">Cancelar</button><button class="btn primary" id="saveJob">Crear orden</button></div>
   </div>
 </div>
 
-<div class="modal-backdrop" id="detailModal">
-  <div class="modal large"><div class="modal-head"><div><h3 id="detailTitle">Detalle</h3><p id="detailSubtitle"></p></div><button class="close" data-close="detailModal">×</button></div><div class="modal-body" id="detailBody"></div><div class="modal-foot"><button class="btn" data-close="detailModal">Cerrar</button><button class="btn cyan" id="editOrderBtn">Editar datos</button><button class="btn primary" id="advanceOrderBtn">Avanzar estado</button></div></div>
-</div>
+<script>
+  const modal = document.getElementById('modal');
+  const openModal = () => modal.classList.add('show');
+  const closeModal = () => modal.classList.remove('show');
+  document.getElementById('newJobBtn').addEventListener('click', openModal);
+  document.getElementById('closeModal').addEventListener('click', closeModal);
+  document.getElementById('cancelModal').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
 
-<div class="modal-backdrop" id="quoteModal">
-  <div class="modal"><div class="modal-head"><div><h3>Preparar cotización</h3><p id="quoteSubtitle">Pedido</p></div><button class="close" data-close="quoteModal">×</button></div><form id="quoteForm"><div class="modal-body"><div class="form-grid"><div class="field"><label>Monto (Gs.)</label><input class="input" id="qAmount" type="number" min="0" step="1000" required /></div><div class="field"><label>Validez</label><select class="select" id="qValidity"><option>7 días</option><option>10 días</option><option>15 días</option><option>30 días</option></select></div><div class="field full"><label>Nota de cotización</label><textarea class="textarea" id="qNote" placeholder="Incluye producción según especificaciones. Plazo sujeto a aprobación final..."></textarea></div></div></div><div class="modal-foot"><button type="button" class="btn" data-close="quoteModal">Cancelar</button><button class="btn primary" type="submit">Guardar y enviar a aprobación</button></div></form></div>
-</div>
+  document.querySelectorAll('.segmented button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.segmented button').forEach(x=>x.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.job').forEach(job=>{
+        job.style.display = filter === 'all' || job.dataset.kind.includes(filter) ? 'grid':'none';
+      });
+    });
+  });
 
-<div class="toast" id="toast"></div>
+  document.querySelectorAll('.advanceBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const old = btn.textContent;
+      btn.textContent = 'Actualizado ✓';
+      btn.style.background = '#171717';
+      btn.style.color = '#fff';
+      setTimeout(()=>{btn.textContent=old;btn.style.background='';btn.style.color='';},1400);
+    });
+  });
 
-<script src="app.js"></script>
+  document.getElementById('saveJob').addEventListener('click', ()=>{
+    const client = document.getElementById('client').value.trim() || 'Nuevo cliente';
+    const type = document.getElementById('type').value;
+    const qty = document.getElementById('qty').value || '0';
+    const wrap = document.getElementById('jobList');
+    const article = document.createElement('article');
+    article.className='job';
+    article.dataset.kind='all';
+    article.innerHTML = `
+      <div class="ticket yellow"></div>
+      <div><div class="job-code">OP-${Math.floor(2660+Math.random()*30)} · NUEVA</div><div class="job-name">${type}</div><div class="job-client">${client}</div></div>
+      <div class="spec"><b>Ingreso</b>${qty} u. · Especificación pendiente<br>Revisión comercial</div>
+      <div class="progress"><b>Ingreso 10%</b><div class="bar"><i style="width:10%"></i></div></div>
+      <div class="job-actions"><span class="pill gray">Ingresado</span><br><button>Detalle →</button></div>`;
+    wrap.prepend(article);
+    closeModal();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>location.reload());
+</script>
 </body>
 </html>
