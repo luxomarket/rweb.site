@@ -333,7 +333,7 @@ function approve(id){var q=S.quotes.find(function(x){return x.id===id});if(!q)re
 function renderDeliveries(){
  var u=me(),el=document.getElementById('delivery'),ds=permittedDeliveries();
  if(u.role==='driver'){el.innerHTML='<div class="driver-shell"><div class="hero"><div><h1>Mis entregas</h1><p>Solo aparecen los pedidos asignados a tu usuario.</p></div></div>'+driverCards(ds)+'</div>';return}
- el.innerHTML='<div class="hero"><div><h1>Entregas</h1><p>Asignación de conductor, fecha prevista y trazabilidad hasta recepción.</p></div>'+(u.role==='admin'?'<button class="btn primary" onclick="newDelivery()">+ Asignar entrega</button>':'')+'</div><div class="table"><table><thead><tr><th>Entrega</th><th>Pedido</th><th>Cliente / sede</th><th>Vendedor</th><th>Conductor</th><th>Fecha</th><th>Estado</th><th>Confirmación</th></tr></thead><tbody>'+ds.map(function(d){return '<tr><td><b>'+d.id+'</b></td><td>'+d.o+'</td><td>'+esc(C(d.c).n)+'<br><small>'+esc(Site(d.s)?Site(d.s).n:'')+'</small></td><td>'+esc(sellerName(d.seller))+'</td><td>'+esc(driverName(d.driver))+'</td><td>'+fd(d.date)+'</td><td><span class="status '+sc(d.st)+'">'+esc(d.st)+'</span></td><td>'+(d.deliveredAt?'Entregado '+fdt(d.deliveredAt)+(d.receivedBy?' · Recibió: '+esc(d.receivedBy):'')+(d.receiptNote?' · '+esc(d.receiptNote):''):d.failReason?'No entregado: '+esc(d.failReason):'Pendiente')+'</td></tr>'}).join('')+'</tbody></table></div>';
+ el.innerHTML='<div class="hero"><div><h1>Entregas</h1><p>Asignación de conductor, fecha prevista y trazabilidad hasta recepción.</p></div>'+(u.role==='admin'?'<button class="btn primary" onclick="newDelivery()">+ Asignar entrega</button>':'')+'</div><div class="table"><table><thead><tr><th>Entrega</th><th>Pedido</th><th>Cliente / sede</th><th>Vendedor</th><th>Conductor</th><th>Fecha</th><th>Estado</th><th>Confirmación</th></tr></thead><tbody>'+ds.map(function(d){return '<tr><td><b>'+d.id+'</b></td><td>'+d.o+'</td><td>'+esc(C(d.c).n)+'<br><small>'+esc(Site(d.s)?Site(d.s).n:'')+'</small></td><td>'+esc(sellerName(d.seller))+'</td><td>'+esc(driverName(d.driver))+'</td><td>'+fd(d.date)+'</td><td><span class="status '+sc(d.st)+'">'+esc(d.st)+'</span></td><td>'+(d.deliveredAt?'Entregado '+fdt(d.deliveredAt)+(d.receivedBy?' · Recibió: '+esc(d.receivedBy):'')+(d.receiptNote?' · '+esc(d.receiptNote):'')+'<br><button class="btn small" style="margin-top:5px" onclick="showDeliveryReceipt(\''+d.id+'\')">Ver comprobante</button>':d.failReason?'No entregado: '+esc(d.failReason):'Pendiente')+'</td></tr>'}).join('')+'</tbody></table></div>';
 }
 function newDelivery(oid){
  var available=S.orders.filter(function(o){return ['Confirmado','Preparando'].indexOf(o.st)>=0}),o=S.orders.find(function(x){return x.id===oid})||available[0];if(!o)return msg('Primero confirmá un pedido');var drivers=S.users.filter(function(x){return x.role==='driver'});
@@ -347,15 +347,32 @@ function driverStatus(id,status){
  d.st=status;log(me().name+' marcó '+id+' como '+status);save();msg('Entrega: '+status)
 }
 function confirmDeliveryReceipt(id){
- var d=S.delivery.find(function(x){return x.id===id}),c=C(d.c);
- openM('Confirmar entrega','<div class="note">Pedido '+esc(d.o)+' · '+esc(c?c.n:'Cliente')+'</div><div class="form"><div class="field full"><label>Nombre de quien recibe</label><input id="drb" placeholder="Ej.: Juan González"></div><div class="field full"><label>Observación de entrega</label><input id="drn" placeholder="Ej.: Recibido en depósito"></div></div>','<button class="btn" onclick="closeM()">Cancelar</button><button class="btn good" onclick="saveDeliveryReceipt(\''+id+'\')">Confirmar entregado</button>')
+ var d=S.delivery.find(function(x){return x.id===id}),c=C(d.c),s=Site(d.s),driver=driverName(d.driver),nowText=new Date().toLocaleString('es-PY',{dateStyle:'short',timeStyle:'short'});
+ openM('Confirmar entrega',
+  '<div class="note"><b>'+esc(c?c.n:'Cliente')+' · '+esc(s?s.n:'')+'</b><br>Pedido '+esc(d.o)+' · Entrega '+esc(d.id)+'</div>'+
+  '<div class="grid metric-row" style="margin:10px 0"><div class="card metric"><label>Conductor</label><strong style="font-size:13px">'+esc(driver)+'</strong></div><div class="card metric"><label>Fecha y hora</label><strong style="font-size:13px">'+esc(nowText)+'</strong></div></div>'+
+  '<div class="form"><div class="field full"><label>Nombre de quien recibe *</label><input id="drb" placeholder="Ej.: Juan González"></div><div class="field full"><label>Observación de entrega</label><input id="drn" placeholder="Ej.: Recibido en depósito principal"></div><div class="field full"><label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:10px;border-radius:9px"><input id="drc" type="checkbox"> Confirmo que la mercadería fue entregada al cliente</label></div></div>'+
+  '<div class="note" style="margin-top:10px">La fecha, hora y conductor se registran automáticamente. En producción se puede agregar foto, firma o geolocalización si PROACTIF lo requiere.</div>',
+  '<button class="btn" onclick="closeM()">Cancelar</button><button class="btn good" onclick="saveDeliveryReceipt(\''+id+'\')">Confirmar entregado</button>')
 }
 function saveDeliveryReceipt(id){
- var d=S.delivery.find(function(x){return x.id===id}),receiver=document.getElementById('drb').value.trim();if(!receiver)return msg('Ingresá quién recibió el pedido');
+ var d=S.delivery.find(function(x){return x.id===id}),receiver=document.getElementById('drb').value.trim(),confirmed=document.getElementById('drc').checked;
+ if(!receiver)return msg('Ingresá quién recibió el pedido');
+ if(!confirmed)return msg('Confirmá que la mercadería fue entregada');
  d.receivedBy=receiver;d.receiptNote=document.getElementById('drn').value.trim();d.deliveredAt=stamp();d.st='Entregado';
  var o=S.orders.find(function(x){return x.id===d.o});
  if(o){o.st='Entregado';var s=Site(o.s);o.it.forEach(function(i){var m=s&&s.m.find(function(x){return x.p===i.p});if(m)m.last=iso(now);var p=P(i.p);if(p&&typeof p.stock==='number')p.stock=Math.max(0,p.stock-i.q)})}
- log(me().name+' confirmó '+id+' entregado a '+receiver);closeM();save();msg('Entrega confirmada')
+ log(me().name+' confirmó '+id+' entregado a '+receiver);closeM();save();msg('Entrega confirmada y comprobante registrado')
+}
+function showDeliveryReceipt(id){
+ var d=S.delivery.find(function(x){return x.id===id}),c=C(d.c),s=Site(d.s);
+ if(!d||!d.deliveredAt)return msg('La entrega todavía no tiene comprobante');
+ openM('Comprobante de entrega',
+  '<div class="card panel"><div class="delivery-head"><div><h3 style="margin:0">'+esc(c?c.n:'Cliente')+'</h3><p>'+esc(s?s.n:'')+' · Pedido '+esc(d.o)+'</p></div><span class="status ok">ENTREGADO</span></div>'+
+  '<div class="mini-kpis" style="margin-top:14px"><div class="mini-kpi"><span>Fecha</span><b>'+fd(d.deliveredAt.slice(0,10))+'</b></div><div class="mini-kpi"><span>Hora</span><b>'+hm(d.deliveredAt)+'</b></div><div class="mini-kpi"><span>Conductor</span><b>'+esc(driverName(d.driver))+'</b></div></div>'+
+  '<div class="alert"><b>Recibió</b><p>'+esc(d.receivedBy||'No registrado')+'</p></div>'+
+  '<div class="alert"><b>Observación</b><p>'+esc(d.receiptNote||'Sin observación')+'</p></div></div>',
+  '<button class="btn primary" onclick="closeM()">Cerrar</button>')
 }
 function deliveryFail(id){openM('No se pudo entregar','<div class="form"><div class="field full"><label>Motivo</label><select id="dfr"><option>Cliente ausente</option><option>Local cerrado</option><option>Dirección incorrecta</option><option>Pedido rechazado</option><option>Problema con mercadería</option><option>Otro</option></select></div><div class="field full"><label>Observación</label><input id="dfn"></div></div>','<button class="btn" onclick="closeM()">Cancelar</button><button class="btn bad" onclick="saveDeliveryFail(\''+id+'\')">Registrar incidencia</button>')}
 function saveDeliveryFail(id){var d=S.delivery.find(function(x){return x.id===id});d.st='No entregado';d.failReason=document.getElementById('dfr').value+(document.getElementById('dfn').value?' · '+document.getElementById('dfn').value:'');log(me().name+' registró entrega no completada '+id);closeM();save();msg('Incidencia registrada')}
