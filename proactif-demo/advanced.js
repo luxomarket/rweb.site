@@ -8,6 +8,11 @@ function money(n){return new Intl.NumberFormat('es-PY',{style:'currency',currenc
 function stamp(){var d=new Date();return d.toISOString()}
 function hm(s){if(!s)return'—';var d=new Date(s);return d.toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'})}
 function fdt(s){if(!s)return'—';var d=new Date(s);return d.toLocaleDateString('es-PY')+' '+d.toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'})}
+function dayName(s){if(!s)return'—';return new Date(s).toLocaleDateString('es-PY',{weekday:'long'}).replace(/^./,function(c){return c.toUpperCase()})}
+function deliverySummary(d){
+ if(!d||!d.deliveredAt)return'';
+ return '<div class="card" style="margin-top:10px;padding:12px;background:#f5fbf8;border-color:#b8e2d2"><div style="font-size:10px;font-weight:900;color:#087453;margin-bottom:8px">RESUMEN DE ENTREGA</div><div class="mini-kpis" style="margin:0"><div class="mini-kpi"><span>Día</span><b>'+esc(dayName(d.deliveredAt))+'</b></div><div class="mini-kpi"><span>Fecha</span><b>'+fd(d.deliveredAt.slice(0,10))+'</b></div><div class="mini-kpi"><span>Hora</span><b>'+hm(d.deliveredAt)+'</b></div></div><div style="font-size:10px;margin-top:8px"><b>Conductor:</b> '+esc(driverName(d.driver))+(d.receivedBy?' · <b>Recibió:</b> '+esc(d.receivedBy):'')+(d.receiptNote?' · <b>Obs.:</b> '+esc(d.receiptNote):'')+'</div></div>'
+}
 function dayDiff(s){if(!s)return 999;return Math.floor((new Date(iso(now))-new Date(s))/86400000)}
 function monthKey(s){var d=new Date(s);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
 function currentMonth(){return monthKey(now)}
@@ -254,7 +259,7 @@ function driverCards(list){
  (d.st==='Asignado'?'<button class="btn" onclick="driverStatus(\''+d.id+'\',\'En preparación\')">En preparación</button>':'')+
  (['Asignado','En preparación'].indexOf(d.st)>=0?'<button class="btn primary" onclick="driverStatus(\''+d.id+'\',\'Salí a entregar\')">Salí a entregar</button>':'')+
  (d.st==='Salí a entregar'?'<button class="btn good" onclick="driverStatus(\''+d.id+'\',\'Entregado\')">Entregado</button><button class="btn bad" onclick="deliveryFail(\''+d.id+'\')">No se pudo entregar</button>':'')+
- '</div>'+(d.deliveredAt?'<div class="note" style="margin-top:10px">Entregado '+fdt(d.deliveredAt)+' · '+esc(driverName(d.driver))+(d.receivedBy?' · Recibió: '+esc(d.receivedBy):'')+(d.receiptNote?' · '+esc(d.receiptNote):'')+'</div>':'')+'</div>'}).join('')+'</div>';
+ '</div>'+(d.deliveredAt?deliverySummary(d):'')+'</div>'}).join('')+'</div>';
 }
 
 function renderTeam(){
@@ -369,7 +374,7 @@ function showDeliveryReceipt(id){
  if(!d||!d.deliveredAt)return msg('La entrega todavía no tiene comprobante');
  openM('Comprobante de entrega',
   '<div class="card panel"><div class="delivery-head"><div><h3 style="margin:0">'+esc(c?c.n:'Cliente')+'</h3><p>'+esc(s?s.n:'')+' · Pedido '+esc(d.o)+'</p></div><span class="status ok">ENTREGADO</span></div>'+
-  '<div class="mini-kpis" style="margin-top:14px"><div class="mini-kpi"><span>Fecha</span><b>'+fd(d.deliveredAt.slice(0,10))+'</b></div><div class="mini-kpi"><span>Hora</span><b>'+hm(d.deliveredAt)+'</b></div><div class="mini-kpi"><span>Conductor</span><b>'+esc(driverName(d.driver))+'</b></div></div>'+
+  '<div class="mini-kpis" style="margin-top:14px"><div class="mini-kpi"><span>Día</span><b>'+esc(dayName(d.deliveredAt))+'</b></div><div class="mini-kpi"><span>Fecha</span><b>'+fd(d.deliveredAt.slice(0,10))+'</b></div><div class="mini-kpi"><span>Hora</span><b>'+hm(d.deliveredAt)+'</b></div></div><div class="alert"><b>Conductor</b><p>'+esc(driverName(d.driver))+'</p></div>'+
   '<div class="alert"><b>Recibió</b><p>'+esc(d.receivedBy||'No registrado')+'</p></div>'+
   '<div class="alert"><b>Observación</b><p>'+esc(d.receiptNote||'Sin observación')+'</p></div></div>',
   '<button class="btn primary" onclick="closeM()">Cerrar</button>')
