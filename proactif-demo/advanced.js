@@ -372,4 +372,13 @@ function restoreDemo(){if(confirm('¿Restaurar todos los datos originales de la 
 document.getElementById('nav').onclick=function(e){var b=e.target.closest('button[data-v]');if(b)go(b.getAttribute('data-v'))};
 document.getElementById('mb').onclick=function(e){if(e.target.id==='mb')closeM()};
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')login()});
+function startIntro(){
+ var el=document.getElementById('introScreen');if(!el)return;
+ var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ setTimeout(function(){
+   el.classList.add('is-hiding');
+   setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el)},600);
+ },reduced?450:2450);
+}
+startIntro();
 boot();
