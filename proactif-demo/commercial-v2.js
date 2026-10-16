@@ -159,10 +159,10 @@
 
   renderNav=function(){
     var u=me(),items=[];
-    if(u.role==='admin')items=[['dash','▦ Dashboard'],['team','👥 Equipo comercial'],['targets','◎ Metas & proyección'],['clients','◉ Clientes & sedes'],['reps','↻ Reposiciones'],['orders','▤ Pedidos'],['quotes','₲ Cotizaciones'],['delivery','▰ Entregas'],['report','▥ Reporte entregas'],['catalog','▥ Catálogo por rubro'],['client360','◎ Cliente 360'],['portal','✉ Solicitudes web'],['integrations','⟲ Integraciones'],['hygiene','✦ Soluciones por área']];
-    if(u.role==='management')items=[['dash','▦ Dashboard gerencial'],['team','👥 Equipos de venta'],['targets','◎ Metas & proyección'],['clients','◉ Clientes'],['catalog','▥ Catálogo por rubro'],['integrations','⟲ Integraciones']];
-    if(u.role==='supervisor')items=[['dash','▦ Mi equipo'],['team','👥 Mis vendedores'],['targets','◎ Metas & proyección'],['clients','◉ Clientes del equipo'],['reps','↻ Reposiciones'],['orders','▤ Pedidos'],['catalog','▥ Catálogo por rubro']];
-    if(u.role==='seller')items=[['dash','▦ Mi dashboard'],['targets','◎ Mis metas'],['agenda','◷ Mi agenda'],['clients','◉ Mi cartera'],['reps','↻ Reposiciones'],['orders','▤ Pedidos'],['quotes','₲ Cotizaciones'],['delivery','▰ Entregas'],['catalog','▥ Catálogo por rubro'],['client360','◎ Cliente 360'],['portal','✉ Solicitudes web'],['hygiene','✦ Soluciones por área']];
+    if(u.role==='admin')items=[['dash','▦ Dashboard'],['team','👥 Equipo comercial'],['targets','◎ Metas & proyección'],['discounts','% Descuentos'],['clients','◉ Clientes & sedes'],['reps','↻ Reposiciones'],['orders','▤ Pedidos'],['quotes','₲ Cotizaciones'],['delivery','▰ Entregas'],['report','▥ Reporte entregas'],['catalog','▥ Catálogo por rubro'],['client360','◎ Cliente 360'],['portal','✉ Solicitudes web'],['integrations','⟲ Integraciones'],['hygiene','✦ Soluciones por área']];
+    if(u.role==='management')items=[['dash','▦ Dashboard gerencial'],['team','👥 Equipos de venta'],['targets','◎ Metas & proyección'],['discounts','% Descuentos'],['clients','◉ Clientes'],['catalog','▥ Catálogo por rubro'],['integrations','⟲ Integraciones']];
+    if(u.role==='supervisor')items=[['dash','▦ Mi equipo'],['team','👥 Mis vendedores'],['targets','◎ Metas & proyección'],['discounts','% Descuentos'],['clients','◉ Clientes del equipo'],['reps','↻ Reposiciones'],['orders','▤ Pedidos'],['catalog','▥ Catálogo por rubro']];
+    if(u.role==='seller')items=[['dash','▦ Mi dashboard'],['targets','◎ Mis metas'],['discounts','% Mis descuentos'],['agenda','◷ Mi agenda'],['clients','◉ Mi cartera'],['reps','↻ Reposiciones'],['orders','▤ Pedidos'],['quotes','₲ Cotizaciones'],['delivery','▰ Entregas'],['catalog','▥ Catálogo por rubro'],['client360','◎ Cliente 360'],['portal','✉ Solicitudes web'],['hygiene','✦ Soluciones por área']];
     if(u.role==='driver')items=[['dash','▦ Mi jornada'],['delivery','▰ Mis entregas']];
     document.getElementById('nav').innerHTML=items.map(function(i){return '<button data-v="'+i[0]+'" class="'+(i[0]===activeView?'active':'')+'">'+i[1]+'</button>'}).join('');
     document.getElementById('sideNote').innerHTML=u.role==='driver'?'Acceso operativo de logística. Solo muestra entregas asignadas al conductor.':'Demo funcional V2 · Los eventos CRM y Business Central se simulan localmente hasta disponer de las APIs reales.'
@@ -173,7 +173,7 @@
     if(u.role==='driver'&&['dash','delivery'].indexOf(id)<0)id='dash';
     activeView=id;document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('active',v.id===id)});
     document.querySelectorAll('.nav button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-v')===id)});
-    var n={dash:u.role==='driver'?'Mi jornada':u.role==='seller'?'Mi dashboard':u.role==='supervisor'?'Mi equipo comercial':'Dashboard gerencial',team:u.role==='supervisor'?'Mis vendedores':'Equipo comercial',targets:'Metas y proyección',agenda:'Mi agenda',clients:u.role==='seller'?'Mi cartera':'Clientes empresariales',reps:'Reposiciones próximas',orders:'Pedidos',quotes:'Cotizaciones',delivery:u.role==='driver'?'Mis entregas':'Entregas',report:'Reporte de entregas',catalog:'Catálogo por rubro',client360:'Cliente 360',portal:'Solicitudes web',integrations:'Integraciones',hygiene:'Soluciones por área'};
+    var n={dash:u.role==='driver'?'Mi jornada':u.role==='seller'?'Mi dashboard':u.role==='supervisor'?'Mi equipo comercial':'Dashboard gerencial',team:u.role==='supervisor'?'Mis vendedores':'Equipo comercial',targets:'Metas y proyección',discounts:'Descuentos y autorizaciones',agenda:'Mi agenda',clients:u.role==='seller'?'Mi cartera':'Clientes empresariales',reps:'Reposiciones próximas',orders:'Pedidos',quotes:'Cotizaciones',delivery:u.role==='driver'?'Mis entregas':'Entregas',report:'Reporte de entregas',catalog:'Catálogo por rubro',client360:'Cliente 360',portal:'Solicitudes web',integrations:'Integraciones',hygiene:'Soluciones por área'};
     document.getElementById('title').textContent=n[id]||'PROACTIF CARE';
     window.scrollTo({top:0,behavior:'smooth'})
   };
@@ -318,10 +318,139 @@
   render=function(){
     baseRender();
     renderSalesTargets();
+    renderDiscounts();
     renderIntegrations();
     renderNav()
   };
 
+
+  function enhanceDiscountState(){
+    S.discountRequests=S.discountRequests||[
+      {id:'DSC-1001',orderId:'O-1010',seller:'u1',supervisor:'sup1',c:'c2',requestedPct:8,reason:'Cliente solicita una condición especial por volumen para cerrar la compra.',status:'Pendiente',createdAt:stamp(),resolvedAt:'',resolvedBy:''}
+    ];
+    S.orders.forEach(function(o){
+      if(o.listAmount==null)o.listAmount=o.amount||0;
+      if(o.discountPct==null)o.discountPct=0;
+      if(o.discountApproval==null)o.discountApproval=o.discountPct>5?'Pendiente':(o.discountPct>0?'Autorizado vendedor':'No aplica');
+      if(o.discountPct<=5&&o.amount==null)o.amount=Math.round((o.listAmount||0)*(1-o.discountPct/100));
+    });
+    var sample=S.orders.find(function(o){return o.id==='O-1010'});
+    if(sample&&!sample.discountRequestId){
+      sample.listAmount=sample.listAmount||sample.amount||9200000;
+      sample.discountPct=8;
+      sample.discountRequestId='DSC-1001';
+      sample.discountApproval='Pendiente';
+      sample.pendingNet=Math.round(sample.listAmount*.92);
+      sample.amount=sample.listAmount;
+      if(sample.st!=='Entregado')sample.st='Pendiente aprobación descuento';
+    }
+    localStorage.setItem(K,JSON.stringify(S))
+  }
+
+  function discountRequestsVisible(){
+    var u=me(),all=S.discountRequests||[];
+    if(!u)return[];
+    if(u.role==='seller')return all.filter(function(x){return x.seller===u.id});
+    if(u.role==='supervisor')return all.filter(function(x){return x.supervisor===u.id});
+    if(u.role==='admin'||u.role==='management')return all.slice();
+    return[]
+  }
+  function discountBadge(s){
+    var cls=s==='Aprobada'?'ok':s==='Rechazada'?'red':s==='Pendiente'?'warn':'blue';
+    return '<span class="status '+cls+'">'+esc(s)+'</span>'
+  }
+  function discountNet(list,p){return Math.round((Number(list)||0)*(1-(Number(p)||0)/100))}
+  function nextDiscountId(){return 'DSC-'+(1001+(S.discountRequests||[]).length)}
+  function requestDiscount(order,pct,reason){
+    var seller=U(order.seller),supervisor=seller&&seller.supervisor?U(seller.supervisor):null;
+    if(!supervisor)return {ok:false,error:'Este vendedor todavía no tiene un supervisor asignado.'};
+    (S.discountRequests||[]).filter(function(x){return x.orderId===order.id&&x.status==='Pendiente'}).forEach(function(x){x.status='Reemplazada';x.resolvedAt=stamp()});
+    var req={id:nextDiscountId(),orderId:order.id,seller:order.seller,supervisor:supervisor.id,c:order.c,requestedPct:pct,reason:reason,status:'Pendiente',createdAt:stamp(),resolvedAt:'',resolvedBy:''};
+    S.discountRequests.unshift(req);
+    order.discountPct=pct;order.discountRequestId=req.id;order.discountApproval='Pendiente';order.pendingNet=discountNet(order.listAmount,pct);order.amount=order.listAmount;order.st='Pendiente aprobación descuento';
+    log(sellerName(order.seller)+' solicitó '+pct+'% de descuento para '+order.id);
+    return {ok:true,request:req}
+  }
+
+  window.discountPctChanged=function(){
+    var p=Number(document.getElementById('odisc')?document.getElementById('odisc').value:0)||0,wrap=document.getElementById('discountReasonWrap');
+    if(wrap)wrap.style.display=p>5?'grid':'none';
+    updateOrderDiscountPreview()
+  };
+  window.updateOrderDiscountPreview=function(){
+    var total=Number(document.getElementById('oa')?document.getElementById('oa').value:0)||0,p=Number(document.getElementById('odisc')?document.getElementById('odisc').value:0)||0,el=document.getElementById('discountPreview');
+    if(!el)return;
+    p=Math.max(0,Math.min(100,p));
+    var net=discountNet(total,p),approval=p>5?'Requiere autorización del supervisor':'Dentro de la autonomía del vendedor (máx. 5%)';
+    el.innerHTML='<b>Total con descuento: '+money(net)+'</b><br><span>'+p+'% · '+esc(approval)+'</span>'
+  };
+
+  newOrder=function(cid){
+    var cs=permittedClients(),c0=C(cid)||cs[0];if(!c0)return msg('No hay clientes disponibles');
+    var u=me();if(['seller','admin'].indexOf(u.role)<0)return msg('Este perfil es de consulta/supervisión');
+    openM('Crear pedido con política de descuento','<div class="discount-policy"><b>Política comercial demo</b><span>El vendedor puede aplicar hasta 5% sin autorización. Más de 5% genera una solicitud automática a su supervisor con porcentaje y motivo.</span></div><div class="form"><div class="field"><label>Cliente</label><select id="oc" onchange="fillSites()">'+cs.map(function(x){return '<option value="'+x.id+'" '+(x.id===c0.id?'selected':'')+'>'+esc(x.n)+'</option>'}).join('')+'</select></div><div class="field"><label>Sede</label><select id="os">'+c0.sites.map(function(s){return '<option value="'+s.id+'">'+esc(s.n)+'</option>'}).join('')+'</select></div><div class="field full"><div class="field-head"><label>Productos</label><button type="button" class="btn small" onclick="addOrderItem()">+ Agregar producto</button></div><div id="orderItems">'+orderItemRow()+'</div></div><div class="field"><label>Fecha requerida</label><input type="date" id="or" value="'+add(now,5)+'"></div><div class="field"><label>Fecha prevista entrega</label><input type="date" id="od" value="'+add(now,5)+'"></div><div class="field"><label>Subtotal / precio lista (CRM demo)</label><input type="number" id="oa" value="0" min="0" oninput="updateOrderDiscountPreview()"></div><div class="field"><label>Descuento (%)</label><input type="number" id="odisc" value="0" min="0" max="100" step="0.1" oninput="discountPctChanged()"></div><div class="field full" id="discountReasonWrap" style="display:none"><label>Motivo obligatorio para solicitar más de 5%</label><textarea class="input" id="odiscReason" placeholder="Ej.: volumen de compra, cierre de negociación, condición especial del cliente…"></textarea></div><div class="field full"><div class="discount-preview" id="discountPreview"><b>Total con descuento: '+money(0)+'</b><br><span>0% · Dentro de la autonomía del vendedor (máx. 5%)</span></div></div></div>','<button class="btn" onclick="closeM()">Cancelar</button><button class="btn primary" onclick="saveOrder()">Crear pedido</button>')
+  };
+
+  saveOrder=function(){
+    var cid=document.getElementById('oc').value,c0=C(cid),sid=document.getElementById('os').value;if(!sid)return msg('El cliente necesita una sede');
+    var items=Array.from(document.querySelectorAll('#orderItems .order-item')).map(function(row){return{p:row.querySelector('.opi').value,q:+row.querySelector('.oqi').value||1}});
+    if(!items.length)return msg('Agregá al menos un producto');
+    var list=+document.getElementById('oa').value||0,p=Math.max(0,Math.min(100,+document.getElementById('odisc').value||0)),reason=(document.getElementById('odiscReason')?document.getElementById('odiscReason').value.trim():'');
+    if(p>5&&!reason)return msg('Para solicitar más de 5% tenés que indicar el motivo');
+    var id='O-'+(1013+S.orders.length),order={id:id,c:cid,s:sid,seller:c0.seller,date:iso(now),req:document.getElementById('or').value,deliveryDate:document.getElementById('od').value,st:'Recibido',listAmount:list,discountPct:p,discountApproval:p>5?'Pendiente':(p>0?'Autorizado vendedor':'No aplica'),amount:p<=5?discountNet(list,p):list,pendingNet:p>5?discountNet(list,p):null,it:items};
+    S.orders.unshift(order);
+    if(p>5){var rr=requestDiscount(order,p,reason);if(!rr.ok){S.orders.shift();return msg(rr.error)}}
+    log(me().name+' creó pedido '+id+' para '+c0.n+(p?' con '+p+'% de descuento':''));
+    closeM();save();
+    if(p>5){go('discounts');msg('Solicitud enviada al supervisor')}else msg('Pedido creado · descuento autorizado')
+  };
+
+  window.editOrderDiscount=function(oid){
+    var o=S.orders.find(function(x){return x.id===oid});if(!o)return;
+    var u=me();if(u.role!=='seller'||o.seller!==u.id)return msg('Solo el vendedor responsable puede ajustar este descuento');
+    openM('Ajustar descuento · '+o.id,'<div class="discount-policy"><b>Autonomía: hasta 5%</b><span>Una solicitud superior a 5% quedará pendiente de aprobación de tu supervisor.</span></div><div class="form"><div class="field"><label>Precio lista</label><input value="'+money(o.listAmount||o.amount||0)+'" disabled></div><div class="field"><label>Nuevo descuento (%)</label><input type="number" id="editDisc" min="0" max="100" step="0.1" value="'+(o.discountPct||0)+'" oninput="document.getElementById(\'editDiscReasonWrap\').style.display=(+this.value>5?\'grid\':\'none\')"></div><div class="field full" id="editDiscReasonWrap" style="display:'+(o.discountPct>5?'grid':'none')+'"><label>Motivo si supera 5%</label><textarea id="editDiscReason" class="input" placeholder="Explicá la razón comercial de la excepción"></textarea></div></div>','<button class="btn" onclick="closeM()">Cancelar</button><button class="btn primary" onclick="saveOrderDiscount(\''+oid+'\')">Guardar / solicitar</button>')
+  };
+  window.saveOrderDiscount=function(oid){
+    var o=S.orders.find(function(x){return x.id===oid}),p=Math.max(0,Math.min(100,+document.getElementById('editDisc').value||0)),reason=document.getElementById('editDiscReason').value.trim();
+    if(p>5&&!reason)return msg('Indicá el motivo de la solicitud');
+    if(p<=5){
+      (S.discountRequests||[]).filter(function(x){return x.orderId===oid&&x.status==='Pendiente'}).forEach(function(x){x.status='Cancelada';x.resolvedAt=stamp()});
+      o.discountPct=p;o.discountApproval=p?'Autorizado vendedor':'No aplica';o.amount=discountNet(o.listAmount,p);o.pendingNet=null;o.discountRequestId='';if(o.st==='Pendiente aprobación descuento'||o.st==='Descuento rechazado')o.st='Recibido';
+      log(me().name+' ajustó '+oid+' a '+p+'% dentro de su autonomía');closeM();save();msg('Descuento aplicado')
+    }else{
+      var rr=requestDiscount(o,p,reason);if(!rr.ok)return msg(rr.error);closeM();save();go('discounts');msg('Nueva solicitud enviada al supervisor')
+    }
+  };
+
+  renderOrders=function(){
+    var el=document.getElementById('orders'),u=me();if(u.role==='driver'){el.innerHTML='';return}var os=permittedOrders(),canCreate=['seller','admin'].indexOf(u.role)>=0;
+    el.innerHTML='<div class="hero"><div><h1>Pedidos</h1><p>Seguimiento comercial, descuentos y operación desde la solicitud hasta la entrega.</p></div>'+(canCreate?'<div><button class="btn" onclick="repeatOrder()">Repetir anterior</button> <button class="btn primary" onclick="newOrder()">+ Crear pedido</button></div>':'')+'</div><div class="discount-policy"><b>Descuento comercial</b><span>Hasta 5%: autonomía del vendedor. Más de 5%: requiere autorización del supervisor con porcentaje solicitado y motivo.</span></div><div class="table"><table><thead><tr><th>Pedido</th><th>Cliente / sede</th><th>Vendedor</th><th>Lista</th><th>Descuento</th><th>Total / solicitado</th><th>Estado</th><th>Acción</th></tr></thead><tbody>'+os.map(function(o){var list=o.listAmount!=null?o.listAmount:o.amount||0,p=o.discountPct||0,discountInfo=p?'<b>'+p+'%</b><br>'+discountBadge(o.discountApproval==='Aprobada'?'Aprobada':o.discountApproval==='Rechazada'?'Rechazada':o.discountApproval==='Pendiente'?'Pendiente':o.discountApproval):'<span class="status">0%</span>',total=o.discountApproval==='Pendiente'?money(o.pendingNet)+'<br><small>si se aprueba</small>':money(o.amount||0);return '<tr><td><b>'+o.id+'</b><br><small>'+o.it.length+' producto(s)</small></td><td>'+esc(C(o.c).n)+'<br><small>'+esc(Site(o.s)?Site(o.s).n:'')+'</small></td><td>'+esc(sellerName(o.seller))+'</td><td>'+money(list)+'</td><td>'+discountInfo+'</td><td>'+total+'</td><td><span class="status '+sc(o.st)+'">'+esc(o.st)+'</span></td><td><div class="action-stack">'+(u.role==='seller'&&o.seller===u.id?'<button class="btn small" onclick="editOrderDiscount(\''+o.id+'\')">Ajustar descuento</button>':'')+'<select class="input action-select" onchange="handleOrderAction(this,\''+o.id+'\')"><option value="">Seleccionar acción…</option><option value="status:Borrador">Pasar a Borrador</option><option value="status:Recibido">Pasar a Recibido</option><option value="status:Cotizando">Pasar a Cotizando</option><option value="status:Confirmado">Pasar a Confirmado</option><option value="quote">Generar cotización</option>'+(u.role==='admin'?'<option value="delivery">Asignar entrega</option>':'')+'</select></div></td></tr>'}).join('')+'</tbody></table></div>'
+  };
+
+  window.renderDiscounts=function(){
+    var el=document.getElementById('discounts'),u=me();if(!el||u.role==='driver'){if(el)el.innerHTML='';return}
+    var rs=discountRequestsVisible().sort(function(a,b){return String(b.createdAt).localeCompare(String(a.createdAt))}),pending=rs.filter(function(x){return x.status==='Pendiente'}).length;
+    el.innerHTML='<div class="hero"><div><h1>'+(u.role==='seller'?'Mis solicitudes de descuento':'Descuentos y autorizaciones')+'</h1><p>Control de excepciones comerciales superiores al 5% permitido al vendedor.</p></div><span class="v2-badge '+(pending?'demo':'live')+'">'+pending+' pendiente(s)</span></div><div class="discount-policy"><b>Regla vigente en la demo</b><span>0–5% se aplica directamente. Más de 5% queda bloqueado hasta que el supervisor responsable apruebe o rechace la excepción.</span></div>'+
+    '<div class="discount-request-grid">'+(rs.length?rs.map(function(x){var o=S.orders.find(function(z){return z.id===x.orderId}),c0=C(x.c),canResolve=u.role==='supervisor'&&x.supervisor===u.id&&x.status==='Pendiente';return '<div class="card discount-request-card '+(x.status==='Pendiente'?'pending':'')+'"><div class="discount-request-head"><div><h3>'+esc(x.id)+' · '+esc(c0?c0.n:'Cliente')+'</h3><p>Pedido '+esc(x.orderId)+' · '+esc(sellerName(x.seller))+' → '+esc(U(x.supervisor)?U(x.supervisor).name:'Supervisor')+'</p></div><div class="discount-big">'+x.requestedPct+'%</div></div><div class="discount-reason"><b>Motivo de la solicitud</b><p>'+esc(x.reason)+'</p></div><div class="mini-kpis"><div class="mini-kpi"><span>Precio lista</span><b>'+money(o?o.listAmount:0)+'</b></div><div class="mini-kpi"><span>Total solicitado</span><b>'+money(o?discountNet(o.listAmount,x.requestedPct):0)+'</b></div><div class="mini-kpi"><span>Estado</span><b>'+x.status+'</b></div></div>'+(canResolve?'<div class="discount-approval-actions"><button class="btn good" onclick="approveDiscountRequest(\''+x.id+'\')">Aprobar '+x.requestedPct+'%</button><button class="btn bad" onclick="rejectDiscountRequest(\''+x.id+'\')">Rechazar</button></div>':'')+(x.resolvedAt?'<small class="discount-resolved">Resuelto '+fdt(x.resolvedAt)+' por '+esc(U(x.resolvedBy)?U(x.resolvedBy).name:'Usuario')+'</small>':'')+'</div>'}).join(''):'<div class="note">No hay solicitudes de descuento.</div>')+'</div>'
+  };
+  window.approveDiscountRequest=function(id){
+    var u=me(),r=(S.discountRequests||[]).find(function(x){return x.id===id});if(!r)return;
+    if(u.role!=='supervisor'||r.supervisor!==u.id)return msg('La aprobación corresponde al supervisor asignado');
+    if(r.status!=='Pendiente')return msg('Esta solicitud ya fue resuelta');
+    var o=S.orders.find(function(x){return x.id===r.orderId});r.status='Aprobada';r.resolvedAt=stamp();r.resolvedBy=u.id;
+    if(o){o.discountPct=r.requestedPct;o.discountApproval='Aprobada';o.amount=discountNet(o.listAmount,r.requestedPct);o.pendingNet=null;if(o.st==='Pendiente aprobación descuento'||o.st==='Descuento rechazado')o.st='Recibido'}
+    log(u.name+' aprobó '+r.requestedPct+'% de descuento en '+r.orderId);save();go('discounts');msg('Descuento aprobado')
+  };
+  window.rejectDiscountRequest=function(id){
+    var u=me(),r=(S.discountRequests||[]).find(function(x){return x.id===id});if(!r)return;
+    if(u.role!=='supervisor'||r.supervisor!==u.id)return msg('La decisión corresponde al supervisor asignado');
+    if(r.status!=='Pendiente')return msg('Esta solicitud ya fue resuelta');
+    var o=S.orders.find(function(x){return x.id===r.orderId});r.status='Rechazada';r.resolvedAt=stamp();r.resolvedBy=u.id;
+    if(o){o.discountApproval='Rechazada';o.amount=o.listAmount;o.pendingNet=null;o.st='Descuento rechazado'}
+    log(u.name+' rechazó '+r.requestedPct+'% de descuento en '+r.orderId);save();go('discounts');msg('Solicitud rechazada')
+  };
+
   enhanceState();
+  enhanceDiscountState();
   if(me())boot()
 })();
